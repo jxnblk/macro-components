@@ -4,7 +4,9 @@
 Create flexible composite UI components with styled-components and other React components
 
 [![Build Status][build-badge]][build]
+<!-- cant log in so nope
 [![Coverage][coverage-badge]][coverage]
+-->
 
 [build-badge]: https://img.shields.io/travis/jxnblk/macro-components/master.svg?style=flat-square
 [build]: https://travis-ci.org/jxnblk/macro-components
