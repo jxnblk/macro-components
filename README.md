@@ -3,6 +3,14 @@
 
 Create flexible composite UI components with styled-components and other React components
 
+[![Build Status][build-badge]][build]
+[![Coverage][coverage-badge]][coverage]
+
+[build-badge]: https://img.shields.io/travis/jxnblk/macro-components/master.svg?style=flat-square
+[build]: https://travis-ci.org/jxnblk/macro-components
+[coverage-badge]: https://img.shields.io/codecov/c/github/jxnblk/macro-components.svg?style=flat-square
+[coverage]: https://codecov.io/github/jxnblk/macro-components
+
 ```
 npm i macro-components
 ```
@@ -69,6 +77,10 @@ that can be destructured and used as their individual components.
 
 Returns a React component with a props API based on the subcomponents' names.
 Additionally, it creates subcomponents for each part of the given element.
+
+Note:
+- The first argument is a React element, not a component
+- `props` are *not* available to the React element
 
 ## Naming Subcomponents
 

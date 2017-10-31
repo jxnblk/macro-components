@@ -1,3 +1,4 @@
 dist
 coverage
 .nyc_output
+coverage.lcov
