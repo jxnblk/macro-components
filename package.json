@@ -1,7 +1,7 @@
 {
-  "name": "styled-compose",
+  "name": "macro-components",
   "version": "1.0.0-1",
-  "description": "Create flexible composite UI components with styled-components",
+  "description": "Create flexible composite UI components with styled-components and other React components",
   "main": "dist/index.js",
   "scripts": {
     "prepublish": "babel src -d dist",

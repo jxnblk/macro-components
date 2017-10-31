@@ -1,16 +1,16 @@
 
-# styled-compose
+# macro-components
 
-Create flexible composite UI components with styled-components
+Create flexible composite UI components with styled-components and other React components
 
 ```
-npm i styled-compose
+npm i macro-components
 ```
 
 ```jsx
 import React from 'react'
 import styled from 'styled-components'
-import compose from 'styled-compose'
+import macro from 'macro-components'
 import { space, fontSize, color } from 'styled-system'
 
 const Box = styled.div`${space} ${fontSize} ${color}`
@@ -22,7 +22,7 @@ Heading.displayName = 'Heading'
 const Text = styled.div`${space} ${fontSize} ${color}`
 Text.displayName = 'Text'
 
-const Card = compose(
+const Card = macro(
   <Box p={2} bg='gray'>
     <Heading />
     <Text />
@@ -65,20 +65,20 @@ that can be destructured and used as their individual components.
 
 ## API
 
-`compose(reactElement, options)`
+`macro(reactElement, options)`
 
 Returns a React component with a props API based on the subcomponents' names.
 Additionally, it creates subcomponents for each part of the given element.
 
 ## Naming Subcomponents
 
-By default, styled-compose uses a component's `displayName`
+By default, macro-components uses a component's `displayName`
 as the name of the returned subcomponent and a lowercased version as a prop key.
 When using the same component multiple times within a composite component,
 use the `name` prop to provide a custom component name and prop key for a given element.
 
 ```jsx
-const Banner = compose(
+const Banner = macro(
   <Box p={3} color='white' bg='blue'>
     <Heading />
     <Heading name='Subhead' fontSize={3} />

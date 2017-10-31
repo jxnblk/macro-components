@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import lowerFirst from 'lodash.lowerfirst'
 
 const getName = el => typeof el.type === 'function'
-  ? el.type.displayName || el.type.name || 'component'
+  ? el.type.displayName || el.type.name || 'Component'
   : el.type
 
 const createChildComponents = children => {
@@ -22,6 +22,7 @@ const createChildComponents = children => {
           ? subComponents.map(comp => comp.Component(props))
           : props.children || props[key]
       })
+      Component.displayName = name
       components.push({ name, key, Component, subComponents })
     })
 
