@@ -67,6 +67,9 @@ that can be destructured and used as their individual components.
 
 `compose(reactElement, options)`
 
+Returns a React component with a props API based on the subcomponents' names.
+Additionally, it creates subcomponents for each part of the given element.
+
 ## Naming Subcomponents
 
 By default, styled-compose uses a component's `displayName`

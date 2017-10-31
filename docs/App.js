@@ -54,7 +54,6 @@ const Header = compose(<Box p={3} bg='tomato'>
   </Box>
 </Box>)
 
-console.log(Object.keys(Header) )
 const App = props => (
   <Font>
     <Header

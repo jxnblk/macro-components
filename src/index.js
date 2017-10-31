@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import lowerFirst from 'lodash.lowerfirst'
 
 const getName = el => typeof el.type === 'function'
@@ -30,17 +31,23 @@ const createChildComponents = children => {
 const createChildrenFunction = childComponents => props => childComponents
   .map(child => child.Component(props))
 
-const compose = (el, opts) => {
+const compose = (el, opts = {}) => {
+  const { mapProps = (p => p) } = opts
   const childComponents = createChildComponents(el.props.children)
   const children = createChildrenFunction(childComponents)
 
   const Comp = props => React.cloneElement(el, {
-    children: props.children || children(props)
+    children: props.children || children(mapProps(props))
   })
+
+  Comp.propTypes = Object.keys(childComponents)
+    .map(key => ({ [key]: PropTypes.node }))
+    .reduce((a, b) => ({ ...a, ...b }))
 
   const childComponentsObject = childComponents
     .reduce((a, child) => [ ...a, child, ...(child.subComponents || []) ], [])
-    .reduce((a, child) => Object.assign(a, {
+    .reduce((a, child) => ({
+      ...a,
       [child.name]: child.Component
     }), {})
 

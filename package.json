@@ -1,11 +1,11 @@
 {
   "name": "styled-compose",
-  "version": "1.0.0-0",
+  "version": "1.0.0-1",
   "description": "Create flexible composite UI components with styled-components",
   "main": "dist/index.js",
   "scripts": {
     "prepublish": "babel src -d dist",
-    "start": "x0 dev App.js",
+    "start": "x0 dev docs/App.js",
     "cover": "nyc report --reporter=html",
     "test": "nyc ava"
   },
