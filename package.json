@@ -1,0 +1,40 @@
+{
+  "name": "styled-compose",
+  "version": "1.0.0-0",
+  "description": "Create flexible composite UI components with styled-components",
+  "main": "dist/index.js",
+  "scripts": {
+    "prepublish": "babel src -d dist",
+    "start": "x0 dev App.js",
+    "cover": "nyc report --reporter=html",
+    "test": "nyc ava"
+  },
+  "keywords": [],
+  "author": "Brent Jackson",
+  "license": "MIT",
+  "dependencies": {
+    "lodash.lowerfirst": "^4.3.1"
+  },
+  "devDependencies": {
+    "@compositor/x0": "^2.0.0-9",
+    "ava": "^0.23.0",
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1",
+    "babel-register": "^6.26.0",
+    "nyc": "^11.2.1",
+    "prop-types": "^15.6.0",
+    "react": "^16.0.0",
+    "react-dom": "^16.0.0",
+    "react-test-renderer": "^16.0.0",
+    "styled-components": "^2.2.3",
+    "styled-system": "^1.0.8"
+  },
+  "ava": {
+    "require": [
+      "babel-register"
+    ],
+    "babel": "inherit"
+  }
+}
