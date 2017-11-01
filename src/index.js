@@ -18,7 +18,7 @@ const createChildComponents = children => {
         ? createChildComponents(child.props.children)
         : null
       const Component = props => React.cloneElement(child, {
-        children: subComponents
+        [child.props.prop || 'children']: subComponents
           ? subComponents.map(comp => comp.Component(props))
           : props.children || props[key]
       })

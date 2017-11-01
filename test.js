@@ -130,3 +130,13 @@ test('gives a default name for anonymous functions', t => {
   t.is(typeof Card.Component, 'function')
   t.is(Card.Component.displayName, 'Component')
 })
+
+test('uses props.prop to map values to a prop key', t => {
+  const Card = macro(<div>
+    <img prop='src' />
+  </div>)
+  const card = <Card img='hello.png' />
+  const json = render(card).toJSON()
+  t.is(json.children[0].props.src, 'hello.png')
+  t.is(json.children[0].props.children, undefined)
+})

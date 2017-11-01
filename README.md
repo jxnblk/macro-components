@@ -73,7 +73,7 @@ that can be destructured and used as their individual components.
 [thinking-in-react]: https://reactjs.org/docs/thinking-in-react.html
 [bootstrap]: https://getbootstrap.com
 
-## API
+## Usage
 
 `macro(reactElement, options)`
 
@@ -84,7 +84,7 @@ Note:
 - The first argument is a React element, not a component
 - `props` are *not* available to the React element
 
-## Naming Subcomponents
+### Naming subcomponents
 
 By default, macro-components uses a component's `displayName`
 as the name of the returned subcomponent and a lowercased version as a prop key.
@@ -97,6 +97,47 @@ const Banner = macro(
     <Heading />
     <Heading name='Subhead' fontSize={3} />
   </Box>
+)
+```
+
+### Passing props
+
+By default, macro-components passes props as children.
+For images and other void elements, use the `prop` prop to specify which key
+to use when passing props to subcomponents.
+
+```jsx
+const Card = macro(
+  <Box p={1}>
+    <Image prop='src' />
+  </Box>
+)
+
+// The `image` prop will be passed to the Image component as `props.src`
+// <Card image='hello.png' />
+```
+
+### mapProps
+
+For cases where you want to map props from a data object to the component, use the mapProps option.
+The `mapProps` option expects a function that takes a props object and returns props for the macro component.
+
+```jsx
+const ProfileCard = macro(
+  <Flex align='center'>
+    <Avatar prop='src' />
+    <Box pl={2}>
+      <Heading fontSize={3} />
+      <Text />
+    </Box>
+  </Flex>,
+  {
+    mapProps: props => ({
+      avatar: props.imageURL,
+      heading: props.username,
+      text: props.bio
+    })
+  }
 )
 ```
 
