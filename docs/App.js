@@ -108,6 +108,17 @@ const App = props => (
           </Header.Heading>
         </Header>
       </Box>
+      <Box p={3}>
+        <Header>
+          <Heading>
+            Hello
+          </Heading>
+          <Header.Subhead>
+            Beep
+          </Header.Subhead>
+          <Pre>Hello</Pre>
+        </Header>
+      </Box>
     </Container>
   </Font>
 )

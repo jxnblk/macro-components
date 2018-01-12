@@ -23,7 +23,7 @@
     "lodash.lowerfirst": "^4.3.1"
   },
   "devDependencies": {
-    "@compositor/x0": "^2.0.0-9",
+    "@compositor/x0": "^3.0.4",
     "ava": "^0.23.0",
     "babel-cli": "^6.26.0",
     "babel-preset-env": "^1.6.1",
