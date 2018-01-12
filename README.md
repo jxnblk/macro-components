@@ -46,12 +46,12 @@ const App = props => (
       text='This is the Card used as a monolithic component'
     />
     <Card>
-      <Card.Text>
-        But you can also use it in a more composable way
-      </Card.Text>
-      <Card.Heading>
+      <Heading>
         Hello
-      </Card.Heading>
+      </Heading>
+      <Text>
+        But you can also use it in a more composable way
+      </Text>
     </Card>
   </div>
 )
@@ -78,26 +78,46 @@ that can be destructured and used as their individual components.
 `macro(reactElement, options)`
 
 Returns a React component with a props API based on the subcomponents' names.
-Additionally, it creates subcomponents for each part of the given element.
+Additionally, it creates a mapping of subcomponents for each part of the given element.
 
 Note:
 - The first argument is a React element, not a component
-- `props` are *not* available to the React element
+- `props` are *not* available in the React element argument
 
-### Naming subcomponents
+### Creating monolithic props
 
-By default, macro-components uses a component's `displayName`
-as the name of the returned subcomponent and a lowercased version as a prop key.
+By default, macro-components uses a lowercased version of a component's `displayName` as a prop key.
+When a component is used multiple times within the macro-component,
+add a `name` prop to create a custom prop key.
+
+<!--
 When using the same component multiple times within a composite component,
 use the `name` prop to provide a custom component name and prop key for a given element.
+-->
 
 ```jsx
 const Banner = macro(
   <Box p={3} color='white' bg='blue'>
     <Heading />
-    <Heading name='Subhead' fontSize={3} />
+    <Heading name='subhead' fontSize={3} />
   </Box>
 )
+```
+
+With the `name` prop specified, the component can accept a prop with that name or a child element that uses the same name key.
+
+```jsx
+// Usage with props
+<Banner
+  heading='Hello'
+  subhead='Subhead'
+/>
+
+// Usage with composition
+<Banner>
+  <Heading>Hello</Heading>
+  <Heading name='subhead'>Subhead</Heading>
+</Banner>
 ```
 
 ### Passing props

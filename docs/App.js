@@ -30,6 +30,11 @@ const Box = styled('div')`
 
 Box.displayName = 'Box'
 
+const Flex = Box.extend`
+  display: flex;
+  align-items: center;
+`
+
 const Text = styled('div')`
   ${space}
   ${fontSize}
@@ -58,6 +63,7 @@ const Pre = styled('pre')`
   font-size: 13px;
   margin: 0;
   overflow: auto;
+  ${space}
 `
 
 Pre.displayName = 'Pre'
@@ -69,24 +75,66 @@ const Container = styled('div')`
 `
 
 const Header = macro(
-  <Box p={3} bg='#0fa'>
+  <Box bg='#0af' p={3}>
+    <Flex>
+      <Box>
+        <Heading
+          f={6}
+          color='white'
+        />
+        <Heading />
+      </Box>
+      <Pre ml='auto' />
+    </Flex>
+  </Box>
+)
+
+const Card = macro(
+  <Box bg='#eee'>
+    <img width='128' height='128' />
     <Heading />
-    <Heading
-      name='Subhead'
-      fontSize={3}
-      color='rgba(0, 0, 0, .5)'
+    <Heading name='subhead' />
+  </Box>
+)
+
+const App = props => (
+  <Font>
+    <Header>
+      <Heading>Hello</Heading>
+      <Heading>Subhead</Heading>
+      <Pre>npm i macro-components</Pre>
+    </Header>
+
+    <Flex>
+      <Card p={1}>
+        <img src='http://jxnblk.com/avatar/avatar-640.png' />
+        <Heading>Hello Card</Heading>
+      </Card>
+    </Flex>
+
+    {/* required name prop to work properly */}
+    <Header
+      heading='Monolithic mode'
+      pre='Beep boop'
     />
-    <Box p={2} mt={2} bg='white'>
-      <Pre />
-    </Box>
-  </Box>
+  </Font>
 )
 
-const Panel = macro(
-  <Box>
-  </Box>
-)
+//const Header = macro(
+//  <Box p={3} bg='#0fa'>
+//    <Heading />
+//    <Heading
+//      name='Subhead'
+//      fontSize={3}
+//      color='rgba(0, 0, 0, .5)'
+//    />
+//    <Box p={2} mt={2} bg='white'>
+//      <Pre />
+//    </Box>
+//  </Box>
+//)
 
+/*
 const App = props => (
   <Font>
     <Container>
@@ -122,5 +170,6 @@ const App = props => (
     </Container>
   </Font>
 )
+*/
 
 export default App

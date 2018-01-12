@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import lowerFirst from 'lodash.lowerfirst'
 
 const getName = el => typeof el.type === 'function'
-  ? el.type.displayName || el.type.name || 'Component'
+  ? el.props.name || el.type.displayName || el.type.name || 'Component'
   : el.type
 
 const createChildComponents = children => {
@@ -12,7 +12,7 @@ const createChildComponents = children => {
   React.Children.toArray(children)
     .filter(child => typeof child !== 'string')
     .forEach(child => {
-      const name = child.props.name || getName(child)
+      const name = getName(child)
       const key = lowerFirst(name)
       const subComponents = child.props.children
         ? createChildComponents(child.props.children)
@@ -33,25 +33,31 @@ const createChildrenFunction = childComponents => props => childComponents
   .map(child => child.Component(props))
 
 const swapChildren = (tree, dict) => {
+  dict._counts = dict._counts || {}
   return React.Children.toArray(tree)
     .map(child => {
       if (typeof child === 'string') return child
-      const name = child.props.name || getName(child)
-      // console.log('child', child, child.type, dict, dict[name])
-      if (!child.props || !child.props.children) {
-        return dict[name]
-          ? React.cloneElement(child, dict[name].props)
-          : child
-      }
+      const name = getName(child)
       const children = child.props && child.props.children
         ? swapChildren(child.props.children, dict)
         : undefined
-      return dict[name]
-        ? React.cloneElmeent(child, {
+      if (dict[name]) {
+        if (Array.isArray(dict[name])) {
+          dict._counts[name] = dict._counts[name] || 0
+          const i = dict._counts[name]++
+          return React.cloneElement(child, {
+            children,
+            ...dict[name][i].props
+          })
+        }
+        return React.cloneElement(child, {
+          children,
           ...dict[name].props,
-          children
         })
-        : child
+      } else if (!children) {
+        return false
+      }
+      return React.cloneElement(child, { children })
     })
 }
 
@@ -69,15 +75,18 @@ const mapChildrenToTree = (tree, children) => {
     }
     return { ...acc, [name]: child }
   }, {})
-  return swapChildren(tree, dict)
+  const swapped = swapChildren(tree, dict)
+  return swapped
 }
 
 const compose = (el, opts = {}) => {
   const { mapProps = (p => p) } = opts
+
+  // for monolithic props API
   const childComponents = createChildComponents(el.props.children)
   const children = createChildrenFunction(childComponents)
 
-  const Comp = props => React.cloneElement(el, {
+  const Comp = props => React.cloneElement(el, { ...props,
     children: props.children
       ? mapChildrenToTree(el.props.children, props.children)
       : children(mapProps(props))
@@ -87,16 +96,18 @@ const compose = (el, opts = {}) => {
     .map(key => ({ [key]: PropTypes.node }))
     .reduce((a, b) => ({ ...a, ...b }), {})
 
+  return Comp
+
+  /* consider keeping for backwards compatibility?
   const childComponentsObject = childComponents
     .reduce((a, child) => [ ...a, child, ...(child.subComponents || []) ], [])
     .reduce((a, child) => ({
       ...a,
       [child.name]: child.Component
     }), {})
-
   return Object.assign(Comp,
     childComponentsObject
-  )
+  )*/
 }
 
 export default compose
