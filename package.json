@@ -7,6 +7,7 @@
     "prepublish": "babel src -d dist",
     "start": "x0 dev docs/App.js",
     "cover": "nyc report --reporter=html --reporter=lcov > coverage.lcov && codecov",
+    "bench": "babel-node benchmarks/index.js",
     "test": "nyc ava"
   },
   "keywords": [
@@ -30,6 +31,7 @@
     "babel-preset-react": "^6.24.1",
     "babel-preset-stage-0": "^6.24.1",
     "babel-register": "^6.26.0",
+    "benchmark": "^2.1.4",
     "codecov": "^3.0.0",
     "nyc": "^11.2.1",
     "prop-types": "^15.6.0",
