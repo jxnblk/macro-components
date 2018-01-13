@@ -162,3 +162,14 @@ const ProfileCard = macro(
 ```
 
 MIT License
+
+
+```
+// alternative APIs
+
+const Card = macro(
+  <Box>
+    <Heading />
+  </Box>
+)
+```

@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "scripts": {
     "prepublish": "babel src -d dist",
-    "start": "x0 dev docs/App.js",
+    "start": "x0 dev docs/App.js -o",
     "cover": "nyc report --reporter=html --reporter=lcov > coverage.lcov && codecov",
     "bench": "babel-node benchmarks/index.js",
     "test": "nyc ava"

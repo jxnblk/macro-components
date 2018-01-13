@@ -7,7 +7,7 @@ import {
   textAlign,
   color
 } from 'styled-system'
-import macro from '../src'
+import macro from '../src/lite'
 
 injectGlobal`
   * { box-sizing: border-box }
@@ -112,11 +112,12 @@ const App = props => (
       </Card>
     </Flex>
 
-    {/* required name prop to work properly */}
+    {/* required name prop to work properly
     <Header
       heading='Monolithic mode'
       pre='Beep boop'
     />
+    */}
   </Font>
 )
 

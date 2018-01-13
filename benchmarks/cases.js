@@ -1,6 +1,6 @@
 const React = require('react')
 const { renderToString } = require('react-dom/server')
-const macro = require('..').default
+const macro = require('../src/lite').default
 
 const Card = macro(
   <div className='Card'>

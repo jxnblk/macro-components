@@ -32,7 +32,7 @@ const createChildComponents = children => {
 const createChildrenFunction = childComponents => props => childComponents
   .map(child => child.Component(props))
 
-const swapChildren = (tree, dict) => {
+const __swapChildren = (tree, dict) => {
   dict._counts = dict._counts || {}
   return React.Children.toArray(tree)
     .map(child => {
@@ -50,6 +50,26 @@ const swapChildren = (tree, dict) => {
             ...dict[name][i].props
           })
         }
+        return React.cloneElement(child, {
+          children,
+          ...dict[name].props,
+        })
+      } else if (!children) {
+        return false
+      }
+      return React.cloneElement(child, { children })
+    })
+}
+
+const swapChildren = (tree, dict) => {
+  return React.Children.toArray(tree)
+    .map(child => {
+      if (typeof child === 'string') return child
+      const name = getName(child)
+      const children = child.props && child.props.children
+        ? swapChildren(child.props.children, dict)
+        : undefined
+      if (dict[name]) {
         return React.cloneElement(child, {
           children,
           ...dict[name].props,
