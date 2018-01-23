@@ -1,6 +1,6 @@
 const React = require('react')
 const { renderToString } = require('react-dom/server')
-const macro = require('../src/lite').default
+const macro = require('../src').default
 
 const Card = macro(
   <div className='Card'>
@@ -24,16 +24,6 @@ const PlainCard = ({
     <h3 className='Card-subhead'>{subhead}</h3>
   </div>
 )
-
-const macroProps = () => {
-  const html = renderToString(
-    <Card
-      image='kitten.png'
-      heading='Hello'
-      subhead='Beep'
-    />
-  )
-}
 
 const macroComposed = () => {
   const html = renderToString(
@@ -66,7 +56,6 @@ const plainComposed = () => {
 }
 
 module.exports = {
-  macroProps,
   macroComposed,
   plainProps,
   plainComposed,

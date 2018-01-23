@@ -2,14 +2,12 @@ const Benchmark = require('benchmark')
 const suite = new Benchmark.Suite
 
 const {
-  // macroProps,
   macroComposed,
   plainProps,
   plainComposed
 } = require('./cases')
 
 suite
-// .add('macro props', macroProps)
   .add('macro composed', macroComposed)
   .add('plain react props', plainProps)
   .add('plain react composed', plainComposed)
