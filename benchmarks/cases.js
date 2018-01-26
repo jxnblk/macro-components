@@ -1,14 +1,18 @@
-const React = require('react')
-const { renderToString } = require('react-dom/server')
-const macro = require('../src').default
+import React from 'react'
+import { renderToString } from 'react-dom/server'
+import macro from '../src'
 
-const Card = macro(
+const Card = macro(({
+  img,
+  h2,
+  h3
+}) => (
   <div className='Card'>
-    <img name='image' prop='src' className='Card-image' />
-    <h2 name='heading' className='Card-heading' />
-    <h3 name='subhead' className='Card-subhead' />
+    {img}
+    {h2}
+    {h3}
   </div>
-)
+))
 
 const PlainCard = ({
   image,

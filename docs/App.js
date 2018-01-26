@@ -7,7 +7,11 @@ import {
   textAlign,
   color
 } from 'styled-system'
-import macro from '../src/lite'
+import macro from '../src'
+
+const Clone = ({ element, ...props }) => element
+  ? React.cloneElement(element, { ...props, ...element.props })
+  : false
 
 injectGlobal`
   * { box-sizing: border-box }
@@ -58,6 +62,11 @@ Heading.defaultProps = {
   m: 0
 }
 
+const Subhead = Heading.extend`
+  font-weight: 400;
+`
+Subhead.displayName = 'Subhead'
+
 const Pre = styled('pre')`
   font-family: Menlo, monospace;
   font-size: 13px;
@@ -74,40 +83,55 @@ const Container = styled('div')`
   margin-right: auto;
 `
 
-const Header = macro(
-  <Box bg='#0af' p={3}>
+const Card = macro(({
+  img,
+  Heading,
+  subhead
+}) => (
+  <Box bg='#eee'>
+    <Clone element={img}
+      width={128}
+      height={128}
+    />
+    {Heading}
+    {subhead}
+  </Box>
+))
+
+const Header = macro(({
+  Heading,
+  Subhead,
+  Pre,
+}, {
+  p = 3,
+  bg = '#0af'
+}) => (
+  <Box bg={bg} p={p}>
     <Flex>
       <Box>
-        <Heading
+        <Clone
+          element={Heading}
           f={6}
           color='white'
         />
-        <Heading />
+        {Subhead}
       </Box>
-      <Pre ml='auto' />
+      <Box mx='auto' />
+      {Pre}
     </Flex>
   </Box>
-)
-
-const Card = macro(
-  <Box bg='#eee'>
-    <img width='128' height='128' />
-    <Heading />
-    <Heading name='subhead' />
-  </Box>
-)
+))
 
 const App = props => (
   <Font>
-    <Header>
-      <Heading>Hello</Heading>
-      <Heading>Subhead</Heading>
+    <Header p={0}>
+      <Subhead>Subhead</Subhead>
       <Pre>npm i macro-components</Pre>
     </Header>
 
     <Flex>
       <Card p={1}>
-        <img src='http://jxnblk.com/avatar/avatar-640.png' />
+        <img src='http://placehold.it/128' />
         <Heading>Hello Card</Heading>
       </Card>
     </Flex>
