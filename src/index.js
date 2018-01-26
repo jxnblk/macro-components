@@ -1,12 +1,6 @@
 import React from 'react'
 
-const getName = el => el.props.name
-  ? el.props.name
-  : typeof el.type === 'function'
-    ? el.type.displayName || el.type.name
-    : el.type
-
-const macro = template => {
+export const macro = template => {
   class Macro extends React.Component {
     constructor (props) {
       super()
@@ -40,5 +34,15 @@ const macro = template => {
   }
   return Macro
 }
+
+export const getName = el => el.props.name
+  ? el.props.name
+  : typeof el.type === 'function'
+    ? el.type.displayName || el.type.name
+    : el.type
+
+export const Clone = ({ element, ...props }) => element
+  ? React.cloneElement(element, { ...props, ...element.props })
+  : false
 
 export default macro
