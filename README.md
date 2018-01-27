@@ -109,13 +109,68 @@ use the `name` prop to specify which child element is inserted in a particular l
 </Banner>
 ```
 
+**elementFunction**
+
+The element function is similar to a React component, but receives an elements object as its first argument and props as its second one.
+The elements object is created from its children and is intended to make encapsulating composition and element structures easier.
+
+Within the macro component, the element function is called with the elements object and props: `elementFunction(elementsObject, props)`.
+
+```jsx
+// example
+const elFunc = ({ Heading, Text, }, props) => (
+  <header>
+    {Heading}
+    {Text}
+  </header>
+)
+
+const SectionHeader = macro(elFunc)
+```
+
 ### Props passed to the root component
 
-TK
+The second argument passed to the element function allows you to pass props to the root element or any other element within the component.
+
+```jsx
+const Card = macro(({
+  Image,
+  Text
+}, props) => (
+  <Box p={2} bg={props.bg}>
+    {Image}
+    {Text}
+  </Box>
+))
+
+// example usage
+<Card bg='tomato'>
+  <Image src='kittens.png' />
+  <Text>Meow</Text>
+</Card>
+```
 
 ### Clone Component
 
-TK
+To apply default props to the elements passed in as children, use the Clone component in an element function.
+
+```jsx
+import macro, { Clone } from 'macro-components'
+
+const Header = macro(({ Heading, Text }) => (
+  <Box p={2}>
+    <Clone
+      element={Heading}
+      fontSize={6}
+      mb={2}
+    />
+    <Clone
+      element={Text}
+      fontSize={3}
+    />
+  </Box>
+))
+```
 
 ---
 
