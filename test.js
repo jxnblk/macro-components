@@ -1,73 +1,53 @@
 import test from 'ava'
 import React from 'react'
-import { create as render } from 'react-test-renderer'
-import macro from './src'
-
-const domEl = (
-  <div>
-    <h1 name='Heading' />
-    <div />
-  </div>
-)
+import TestRenderer, { create as render } from 'react-test-renderer'
+import util from 'util'
+import macro, { Clone } from './src'
 
 const Box = props => <div {...props} />
 const Text = props => <div {...props} />
 const Heading = props => <h2 {...props} />
 
-const componentEl = (
-  <div>
-    <Heading />
-    <Text />
-  </div>
-)
-
-const nestedEl = (
-  <Box>
-    <Box>
-      <Heading />
-    </Box>
-    <Text />
-  </Box>
-)
-
-const anonEl = (
-  <div>
-    {React.createElement(function () { return 'div' })}
-  </div>
-)
-
 test('returns a component', t => {
-  const Card = macro(domEl)
+  const Card = macro(({ h1, div }) => (
+    <div>
+      {h1}
+      {div}
+    </div>
+  ))
   t.is(typeof Card, 'function')
   t.true(React.isValidElement(<Card />))
 })
 
 test('renders', t => {
-  const Card = macro(domEl)
-  const json = render(<Card heading='Hello' />).toJSON()
-  t.snapshot(json)
-})
-
-test('returns subcomponents', t => {
-  const { Heading, div } = macro(domEl)
-  t.is(typeof Heading, 'function')
-  t.is(typeof div, 'function')
-  t.true(React.isValidElement(<Heading />))
-  t.true(React.isValidElement(<div />))
-})
-
-test('renders subcomponents', t => {
-  const { Heading } = macro(domEl)
-  const json = render(<Heading children='Hello' />).toJSON()
-  t.is(json.type, 'h1')
-  t.is(json.children[0], 'Hello')
+  const Card = macro(({ h1, div }) => (
+    <div>
+      {h1}
+      {div}
+    </div>
+  ))
+  const json = render(
+    <Card>
+      <h1>Hello</h1>
+    </Card>
+  ).toJSON()
   t.snapshot(json)
 })
 
 test('returns a component with React components', t => {
-  const Card = macro(componentEl)
+  const Card = macro(({ Heading, Text }) => (
+    <div>
+      {Heading}
+      {Text}
+    </div>
+  ))
   t.is(typeof Card, 'function')
-  const el = <Card heading='Hello' text='Beep' />
+  const el = (
+    <Card>
+      <Heading>Hello</Heading>
+      <Text>Beep</Text>
+    </Card>
+  )
   t.true(React.isValidElement(el))
   const json = render(el).toJSON()
   t.snapshot(json)
@@ -78,65 +58,133 @@ test('returns a component with React components', t => {
   t.is(b.children[0], 'Beep')
 })
 
-test('returns subcomponent with React components', t => {
-  const Card = macro(componentEl)
-  t.is(typeof Card.Heading, 'function')
-  t.is(typeof Card.Text, 'function')
-  const heading = <Card.Heading children='Hello' />
-  const text = <Card.Text children='Hello' />
-  t.true(React.isValidElement(heading))
-  t.true(React.isValidElement(text))
-  const a = render(heading).toJSON()
-  const b = render(text).toJSON()
-  t.snapshot(a)
-  t.snapshot(b)
+test('swaps out nested child elements', t => {
+  const Nested = macro(({ Heading, Text }) => (
+    <Box>
+      <Box>
+        {Heading}
+      </Box>
+      {Text}
+    </Box>
+  ))
+  const json = render(
+    <Nested>
+      <Heading>Hello</Heading>
+      <Text>Text</Text>
+    </Nested>
+  ).toJSON()
+  t.is(json.children[0].children[0].type, 'h2')
+  t.is(json.children[0].children[0].children[0], 'Hello')
+  t.is(json.children[1].type, 'div')
+  t.is(json.children[1].children[0], 'Text')
 })
 
-test('returns nested subcomponents', t => {
-  const Card = macro(nestedEl)
-  t.is(typeof Card.Box, 'function')
-  t.is(typeof Card.Heading, 'function')
-  t.is(typeof Card.Text, 'function')
-  const card = <Card heading='Hello' text='Beep' />
-  const heading = <Card.Heading children='Hello' />
-  const text = <Card.Text children='Hello' />
-  t.true(React.isValidElement(card))
-  t.true(React.isValidElement(heading))
-  t.true(React.isValidElement(text))
-  const root = render(card).toJSON()
-  const a = render(heading).toJSON()
-  const b = render(text).toJSON()
-  t.snapshot(root)
-  t.snapshot(a)
-  t.snapshot(b)
+test('handles string children', t => {
+  const Card = macro(({ Heading }) => (
+    <div>
+      {Heading}
+      Hello text
+    </div>
+  ))
+  const json = render(
+    <Card>
+      <Heading>Hi</Heading>
+    </Card>
+  ).toJSON()
+  t.is(json.children[1], 'Hello text')
 })
 
-test('maps props with option', t => {
-  const Card = macro(componentEl, {
-    mapProps: props => ({
-      heading: props.name,
-      text: props.description
-    })
-  })
-  const card = <Card name='Name' description='Description' />
-  const json = render(card).toJSON()
-  const [ a, b ] = json.children
-  t.is(a.children[0], 'Name')
-  t.is(b.children[0], 'Description')
+test('accepts a name prop to map to arguments', t => {
+  const Card = macro(({ heading, subhead }) => (
+    <div>
+      {heading}
+      {subhead}
+    </div>
+  ))
+  const json = render(
+    <Card>
+      <Heading name='heading'>Hello</Heading>
+      <Heading name='subhead'>Beep</Heading>
+    </Card>
+  ).toJSON()
+  t.is(json.children[0].type, 'h2')
+  t.is(json.children[0].children[0], 'Hello')
+  t.is(json.children[1].type, 'h2')
+  t.is(json.children[1].children[0], 'Beep')
 })
 
-test('gives a default name for anonymous functions', t => {
-  const Card = macro(anonEl)
-  t.is(typeof Card.Component, 'function')
-  t.is(Card.Component.displayName, 'Component')
+test('updates template on children update', t => {
+  const Card = macro(({ heading, subhead }) => (
+    <div>
+      {heading}
+      {subhead}
+    </div>
+  ))
+  const card = TestRenderer.create(
+    <Card>
+      <Heading name='heading'>Nope</Heading>
+      <Heading name='subhead'>Nope</Heading>
+    </Card>
+  )
+  card.update(
+    <Card>
+      <Heading name='heading'>Hello</Heading>
+      <Heading name='subhead'>Beep</Heading>
+    </Card>
+  )
+  const json = card.toJSON()
+  // card.
+  t.is(json.children[0].type, 'h2')
+  t.is(json.children[0].children[0], 'Hello')
+  t.is(json.children[1].type, 'h2')
+  t.is(json.children[1].children[0], 'Beep')
 })
 
-test('uses props.prop to map values to a prop key', t => {
-  const Card = macro(<div>
-    <img prop='src' />
-  </div>)
-  const card = <Card img='hello.png' />
-  const json = render(card).toJSON()
-  t.is(json.children[0].props.src, 'hello.png')
-  t.is(json.children[0].props.children, undefined)
+test('skips template update', t => {
+  const Card = macro(({ Heading }) => (
+    <div>
+      {Heading}
+    </div>
+  ))
+  const children = (
+    <Heading>Hello</Heading>
+  )
+  const card = TestRenderer.create(
+    <Card>
+      {children}
+    </Card>
+  )
+  card.update(
+    <Card>
+      {children}
+    </Card>
+  )
+  const json = card.toJSON()
+  t.is(json.children[0].type, 'h2')
+  t.is(json.children[0].children[0], 'Hello')
 })
+
+test('Clone returns a cloned element', t => {
+  const el = <Heading>Hello</Heading>
+  const json = render(
+    <Clone
+      element={el}
+      fontSize={4}
+      color='tomato'
+    />
+  ).toJSON()
+  t.is(json.type, 'h2')
+  t.is(json.props.fontSize, 4)
+  t.is(json.props.color, 'tomato')
+})
+
+test('Clone returns false with no element', t => {
+  const json = render(
+    <Clone
+      fontSize={4}
+      color='tomato'
+    />
+  ).toJSON()
+  t.is(json, null)
+})
+
