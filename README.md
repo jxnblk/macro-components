@@ -24,7 +24,10 @@ import styled from 'styled-components'
 import macro from 'macro-components'
 import { space, fontSize, color } from 'styled-system'
 
+// Define some styled-components
 const Box = styled.div`${space} ${fontSize} ${color}`
+
+// Ensure components have a `displayName`
 Box.displayName = 'Box'
 
 const Heading = styled.h2`${space} ${fontSize} ${color}`
@@ -33,6 +36,7 @@ Heading.displayName = 'Heading'
 const Text = styled.div`${space} ${fontSize} ${color}`
 Text.displayName = 'Text'
 
+// Create a macro-component
 const MediaObject = macro(({
   Image,
   Heading,
@@ -49,6 +53,7 @@ const MediaObject = macro(({
   </Flex>
 ))
 
+// Use the macro-component by passing the components as children
 const App = props => (
   <div>
     <MediaObject>
@@ -70,6 +75,7 @@ const App = props => (
 - Intended for use with libraries like [styled-components][sc] & [glamorous][glamorous]
 - Encapsulate layout structure in composable components
 - Help keep your component API surface area to a minimum
+- Works with *any* other React components
 
 ## Motivation
 
@@ -232,6 +238,8 @@ const Header = macro(({ Heading, Text }) => (
 - [styled-components][sc]
 - [glamorous][glamorous]
 - [emotion][emotion]
+- [styled-system](https://github.com/jxnblk/styled-system)
+- [system-components](https://github.com/jxnblk/system-components)
 - *MediaObject* example based on: [The media object saves hundreds of lines of code](http://www.stubbornella.org/content/2010/06/25/the-media-object-saves-hundreds-of-lines-of-code/)
 
 [sc]: https://github.com/styled-components/styled-components
