@@ -99,7 +99,16 @@ const Banner = macro(({
 ```
 
 By default, the `elementFunction` argument is called with an object of elements based on the element type or component `displayName`.
-To ensure correct placement or for when there are multiples of the same component type,
+Using the Banner component above would look something like the following.
+
+```jsx
+<Banner>
+  <Heading>Hello</Heading>
+  <Subhead>Subhead</Subhead>
+</Banner>
+```
+
+To ensure correct placement or for when there are multiples of the same child component type,
 use the `name` prop to specify which child element is inserted in a particular location in the tree.
 
 ```jsx

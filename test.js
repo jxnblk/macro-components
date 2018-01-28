@@ -2,30 +2,7 @@ import test from 'ava'
 import React from 'react'
 import TestRenderer, { create as render } from 'react-test-renderer'
 import util from 'util'
-import macro from './src'
-
-/*
-const domEl = (
-  <div>
-    <h1 name='Heading' />
-    <div />
-  </div>
-)
-const componentEl = (
-  <div>
-    <Heading />
-    <Text />
-  </div>
-)
-const nestedEl = (
-  <Box>
-    <Box>
-      <Heading />
-    </Box>
-    <Text />
-  </Box>
-)
-*/
+import macro, { Clone } from './src'
 
 const Box = props => <div {...props} />
 const Text = props => <div {...props} />
@@ -187,48 +164,27 @@ test('skips template update', t => {
   t.is(json.children[0].children[0], 'Hello')
 })
 
-
-/*
-// from old api
-// maybe this is a feature?
-test.skip('handles multiple duplicate elements', t => {
-  const Multiples = macro(({ Heading }) => (
-    <div>
-      {Heading[0]}
-      <div>
-        {Heading[1]}
-        {Heading[2]}
-      </div>
-    </div>
-  ))
+test('Clone returns a cloned element', t => {
+  const el = <Heading>Hello</Heading>
   const json = render(
-    <Multiples>
-      <Heading>One</Heading>
-      <Heading>Two</Heading>
-    </Multiples>
+    <Clone
+      element={el}
+      fontSize={4}
+      color='tomato'
+    />
   ).toJSON()
-  t.is(json.children[0].type, 'h2')
-  t.is(json.children[0].children[0], 'One')
-  t.is(json.children[1].children[0].type, 'h2')
-  t.is(json.children[1].children[0].children[0], 'Two')
+  t.is(json.type, 'h2')
+  t.is(json.props.fontSize, 4)
+  t.is(json.props.color, 'tomato')
 })
 
-// maybe this is a feature?
-test.skip('handles multiple duplicate children', t => {
-  const Card = macro(({ Heading }) => (
-    <div>
-      {Heading}
-    </div>
-  ))
+test('Clone returns false with no element', t => {
   const json = render(
-    <Card>
-      <Heading>One</Heading>
-      <Heading>Two</Heading>
-      <Heading>Three</Heading>
-    </Card>
+    <Clone
+      fontSize={4}
+      color='tomato'
+    />
   ).toJSON()
-  t.is(json.children[0].type, 'h2')
-  t.is(json.children[0].children[0], 'One')
-  t.is(json.children[1], undefined)
+  t.is(json, null)
 })
-*/
+
