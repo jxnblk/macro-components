@@ -1,11 +1,12 @@
 {
   "name": "macro-components",
   "version": "1.0.0-3",
-  "description": "Create flexible composite UI components with styled-components and other React components",
+  "description": "Create flexible layout and composite UI components without the need to define arbitrary custom props.",
   "main": "dist/index.js",
   "scripts": {
     "prepublish": "babel src -d dist",
     "start": "x0 dev docs/App.js -o",
+    "docs": "x0 build docs/App.js --static --cssLibrary='styled-components' -d docs",
     "cover": "nyc report --reporter=html --reporter=lcov > coverage.lcov && codecov",
     "bench": "babel-node benchmarks/index.js",
     "size": "npm run prepublish && bundlesize",
@@ -21,10 +22,6 @@
   ],
   "author": "Brent Jackson",
   "license": "MIT",
-  "dependencies": {
-    "lodash.lowerfirst": "^4.3.1",
-    "pcln-design-system": "^1.0.0-38"
-  },
   "devDependencies": {
     "@compositor/x0": "^3.0.4",
     "ava": "^0.23.0",
@@ -42,7 +39,8 @@
     "react-dom": "^16.0.0",
     "react-test-renderer": "^16.0.0",
     "styled-components": "^2.2.3",
-    "styled-system": "^1.0.8"
+    "styled-system": "^1.0.8",
+    "system-components": "^1.1.1"
   },
   "ava": {
     "require": [

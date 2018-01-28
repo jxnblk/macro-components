@@ -1,17 +1,7 @@
 import React from 'react'
-import styled, { injectGlobal } from 'styled-components'
-import {
-  space,
-  width,
-  fontSize,
-  textAlign,
-  color
-} from 'styled-system'
-import macro from '../src'
-
-const Clone = ({ element, ...props }) => element
-  ? React.cloneElement(element, { ...props, ...element.props })
-  : false
+import styled, { ThemeProvider, injectGlobal } from 'styled-components'
+import sys from 'system-components'
+import macro, { Clone } from '../src'
 
 injectGlobal`
   * { box-sizing: border-box }
@@ -25,176 +15,133 @@ const Font = styled('div')`
   line-height: 1.5;
 `
 
-const Box = styled('div')`
-  ${space}
-  ${fontSize}
-  ${width}
-  ${color}
-`
+const Box = sys(
+  'space',
+  'fontSize',
+  'width',
+  'color'
+)
 
 Box.displayName = 'Box'
 
-const Flex = Box.extend`
-  display: flex;
-  align-items: center;
-`
+const Flex = sys({
+  align: 'center',
+},
+  'space',
+  'alignItems',
+  'justifyContent',
+  'flexWrap',
+  'flexDirection',
+  'color',
+  'display:flex;'
+)
 
-const Text = styled('div')`
-  ${space}
-  ${fontSize}
-  ${textAlign}
-  ${color}
-`
+const Text = sys(
+  'space',
+  'fontSize',
+  'textAlign',
+  'color'
+)
 
 Text.displayName = 'Text'
 
-const Heading = styled('h2')`
-  line-height: 1.25;
-  ${space}
-  ${fontSize}
-  ${textAlign}
-  ${color}
-`
+const Heading = sys({
+  is: 'h2',
+  m: 0,
+  fontSize: [ 5, 6 ],
+  lineHeight: 1.125,
+  fontWeight: 'bold'
+},
+  'space',
+  'fontSize',
+  'lineHeight',
+  'textAlign',
+  'color'
+)
 
 Heading.displayName = 'Heading'
 
-Heading.defaultProps = {
-  m: 0
-}
-
-const Subhead = Heading.extend`
-  font-weight: 400;
-`
+const Subhead = props => <Heading {...props} fontWeight={600} />
 Subhead.displayName = 'Subhead'
 
-const Pre = styled('pre')`
+const Pre = sys({
+  is: 'pre',
+  m: 0,
+  fontSize: 13,
+}, `
   font-family: Menlo, monospace;
-  font-size: 13px;
-  margin: 0;
   overflow: auto;
-  ${space}
-`
+`)
 
 Pre.displayName = 'Pre'
 
-const Container = styled('div')`
-  max-width: 1024px;
-  margin-left: auto;
-  margin-right: auto;
-`
-
-const Card = macro(({
-  img,
-  Heading,
-  subhead
-}) => (
-  <Box bg='#eee'>
-    <Clone element={img}
-      width={128}
-      height={128}
-    />
-    {Heading}
-    {subhead}
-  </Box>
-))
+const Container = sys({
+  // maxWidth: 1024,
+  mx: 'auto'
+}, 'max-width: 1024px;')
 
 const Header = macro(({
   Heading,
   Subhead,
   Pre,
 }, {
-  p = 3,
-  bg = '#0af'
+  bg = 'seafoam'
 }) => (
-  <Box bg={bg} p={p}>
-    <Flex>
-      <Box>
-        <Clone
-          element={Heading}
-          f={6}
-          color='white'
-        />
-        {Subhead}
-      </Box>
-      <Box mx='auto' />
-      {Pre}
-    </Flex>
+  <Box
+    bg={bg}
+    color='text'
+    px={3}
+    py={[ 4, 5 ]}>
+    <Container>
+      <Flex wrap>
+        <Box width={[ 1, 1, 2/3 ]}>
+          <Clone
+            element={Heading}
+            mb={2}
+          />
+          {Subhead}
+        </Box>
+        <Box mx='auto' />
+        <Box>
+          <Clone
+            element={Pre}
+            py={3}
+          />
+        </Box>
+      </Flex>
+    </Container>
   </Box>
 ))
 
+const space = [
+  0, 4, 8, 16, 32, 64, 128, 256
+]
+
+const colors = {
+  seafoam: '#0fa',
+  text: '#053',
+}
+
+const theme = {
+  space,
+  colors
+}
+
 const App = props => (
-  <Font>
-    <Header p={0}>
-      <Subhead>Subhead</Subhead>
-      <Pre>npm i macro-components</Pre>
-    </Header>
-
-    <Flex>
-      <Card p={1}>
-        <img src='http://placehold.it/128' />
-        <Heading>Hello Card</Heading>
-      </Card>
-    </Flex>
-
-    {/* required name prop to work properly
-    <Header
-      heading='Monolithic mode'
-      pre='Beep boop'
-    />
-    */}
-  </Font>
-)
-
-//const Header = macro(
-//  <Box p={3} bg='#0fa'>
-//    <Heading />
-//    <Heading
-//      name='Subhead'
-//      fontSize={3}
-//      color='rgba(0, 0, 0, .5)'
-//    />
-//    <Box p={2} mt={2} bg='white'>
-//      <Pre />
-//    </Box>
-//  </Box>
-//)
-
-/*
-const App = props => (
-  <Font>
-    <Container>
-      <Box p={3}>
-        <Header
-          heading='macro-components'
-          subhead='Hello'
-          text='Create flexible composite UI components with styled-components and other React components'
-          pre='npm i macro-components'
-        />
-      </Box>
-      <Box p={3}>
+  <React.Fragment>
+    <title>macro-components</title>
+    <ThemeProvider theme={theme}>
+      <Font>
         <Header>
-          <Header.Subhead>
-            Subhead
-          </Header.Subhead>
-          <Header.Heading>
-            Decomposed component example
-          </Header.Heading>
+          <Heading>macro-components</Heading>
+          <Subhead>
+            Create flexible layout and composite UI components without the need to define arbitrary custom props.
+          </Subhead>
+          <Pre>npm i macro-components</Pre>
         </Header>
-      </Box>
-      <Box p={3}>
-        <Header>
-          <Heading>
-            Hello
-          </Heading>
-          <Header.Subhead>
-            Beep
-          </Header.Subhead>
-          <Pre>Hello</Pre>
-        </Header>
-      </Box>
-    </Container>
-  </Font>
+      </Font>
+    </ThemeProvider>
+  </React.Fragment>
 )
-*/
 
 export default App
