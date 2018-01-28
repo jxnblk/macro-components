@@ -1,7 +1,8 @@
 
 # macro-components
 
-Create flexible composite UI components with styled-components and other React components
+Create flexible layout and composite UI components without the need to define arbitrary custom props.
+
 
 [![Build Status][build-badge]][build]
 <!-- cant log in so nope
@@ -63,18 +64,32 @@ const App = props => (
 )
 ```
 
+## Features
+
+- Single component creator
+- Intended for use with libraries like [styled-components][sc] & [glamorous][glamorous]
+- Encapsulate layout structure in composable components
+- Help keep your component API surface area to a minimum
+
 ## Motivation
 
-Most of the time it's best to use [React composition][composition] and `props.children`
+Often it's best to use [React composition][composition] and `props.children`
 to create UI that is composed of multiple elements,
 but sometimes you might want to create larger composite components
-that map to data structures
-(as described in [Thinking in React][thinking-in-react])
+with encapsulated tree structures for layout
 or create [Bootstrap][bootstrap]-like UI components
 such as panels, cards, or alerts.
 This library lets you create composite components
 with encapsulated DOM structures
-that work just like any other React composition.
+without the need to define arbitrary props APIs
+and that work just like any other React composition.
+
+This can help ensure that your component API surface area remains small
+and easier to maintain.
+
+If you find yourself creating composite React components that don't map to data structures,
+as described in [Thinking in React][thinking-in-react],
+then this module is intended for you.
 
 [composition]: https://reactjs.org/docs/composition-vs-inheritance.html
 [thinking-in-react]: https://reactjs.org/docs/thinking-in-react.html
@@ -137,6 +152,35 @@ const elFunc = ({ Heading, Text, }, props) => (
 const SectionHeader = macro(elFunc)
 ```
 
+### Omitting children
+
+For any element not passed as a child to the macro component,
+the element function will render `undefined` and React will not render that element.
+This is useful for conditionally omitting optional children
+
+```jsx
+const Message = macro({
+  Icon,
+  Text,
+  CloseButton
+}) => (
+  <Flex p={2} bg='lightYellow'>
+    {Icon}
+    {Text}
+    <Box mx='auto' />
+    {CloseButton}
+  </Flex>
+)
+
+// Omitting the Icon child element will render Message without an icon.
+<Message>
+  <Text>{props.message}</Text>
+  <CloseButton
+    onClick={props.dismissMessage}
+  />
+</Message>
+```
+
 ### Props passed to the root component
 
 The second argument passed to the element function allows you to pass props to the root element or any other element within the component.
@@ -183,6 +227,15 @@ const Header = macro(({ Heading, Text }) => (
 
 ---
 
+#### Related
+
+- [styled-components][sc]
+- [glamorous][glamorous]
+- [emotion][emotion]
 - *MediaObject* example based on: [The media object saves hundreds of lines of code](http://www.stubbornella.org/content/2010/06/25/the-media-object-saves-hundreds-of-lines-of-code/)
 
-MIT License
+[sc]: https://github.com/styled-components/styled-components
+[glamorous]: https://github.com/paypal/glamorous
+[emotion]: https://github.com/emotion-js/emotion
+
+[MIT License](LICENSE.md)

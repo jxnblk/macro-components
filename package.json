@@ -8,6 +8,7 @@
     "start": "x0 dev docs/App.js -o",
     "cover": "nyc report --reporter=html --reporter=lcov > coverage.lcov && codecov",
     "bench": "babel-node benchmarks/index.js",
+    "size": "npm run prepublish && bundlesize",
     "test": "nyc ava"
   },
   "keywords": [
@@ -33,6 +34,7 @@
     "babel-preset-stage-0": "^6.24.1",
     "babel-register": "^6.26.0",
     "benchmark": "^2.1.4",
+    "bundlesize": "^0.15.3",
     "codecov": "^3.0.0",
     "nyc": "^11.2.1",
     "prop-types": "^15.6.0",
@@ -47,5 +49,15 @@
       "babel-register"
     ],
     "babel": "inherit"
-  }
+  },
+  "bundlesize": [
+    {
+      "path": "./src/index.js",
+      "maxSize": "0.5 kb"
+    },
+    {
+      "path": "./dist/index.js",
+      "maxSize": "1.5 kb"
+    }
+  ]
 }
