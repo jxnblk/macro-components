@@ -2,15 +2,17 @@
   "name": "macro-components",
   "version": "1.0.0",
   "description": "Create flexible layout and composite UI components without the need to define arbitrary custom props.",
-  "main": "dist/index.js",
+  "main": "dist/macro-components.cjs.js",
+  "module": "dist/macro-components.es.js",
   "scripts": {
-    "prepublish": "babel src -d dist",
+    "prepublish": "npm run build",
+    "build": "rollup -c",
     "start": "x0 dev docs/App.js -o",
     "docs": "x0 build docs/App.js --static --cssLibrary='styled-components' -d docs",
     "cover": "nyc report --reporter=html --reporter=lcov > coverage.lcov && codecov",
-    "bench": "babel-node benchmarks/index.js",
-    "size": "npm run prepublish && bundlesize",
-    "test": "nyc ava"
+    "bench": "cross-env BABEL_ENV=cjs babel-node benchmarks/index.js",
+    "size": "npm run build && bundlesize",
+    "test": "cross-env NODE_ENV=test nyc ava"
   },
   "keywords": [
     "react",
@@ -22,6 +24,7 @@
   ],
   "author": "Brent Jackson",
   "license": "MIT",
+  "sideEffects": false,
   "devDependencies": {
     "@compositor/x0": "^3.0.4",
     "ava": "^0.23.0",
@@ -33,14 +36,20 @@
     "benchmark": "^2.1.4",
     "bundlesize": "^0.15.3",
     "codecov": "^3.0.0",
+    "cross-env": "^5.1.3",
     "nyc": "^11.2.1",
     "prop-types": "^15.6.0",
     "react": "^16.0.0",
     "react-dom": "^16.0.0",
     "react-test-renderer": "^16.0.0",
+    "rollup": "^0.55.1",
+    "rollup-plugin-babel": "^3.0.3",
     "styled-components": "^2.2.3",
     "styled-system": "^1.0.8",
     "system-components": "^1.1.1"
+  },
+  "peerDependencies": {
+    "react": "^15.x || ^16.x"
   },
   "ava": {
     "require": [
@@ -54,7 +63,7 @@
       "maxSize": "0.5 kb"
     },
     {
-      "path": "./dist/index.js",
+      "path": "./dist/macro-components.cjs.js",
       "maxSize": "1.5 kb"
     }
   ]
