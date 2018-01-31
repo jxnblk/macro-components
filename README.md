@@ -104,7 +104,11 @@ then this module is intended for you.
 ## Alternatives
 
 The main drawback of this API is that it is somewhat implicit and relies on the components
-having the right `displayName`. It also doesn't work if the component relies on a `name`
+having the right `displayName`. This [couples](https://github.com/jxnblk/macro-components/issues/3#issuecomment-361997713) the "layout" components and the "child" components
+very tightly because a change in the API of the "layout" component will require changes in
+the children passed to it.
+
+It also doesn't work if the component relies on a `name`
 prop itself (because the library overloads its meaning).
 
 Note that it's entirely possible to use a similar pattern without this library in pure
