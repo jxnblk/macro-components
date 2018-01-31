@@ -101,6 +101,17 @@ then this module is intended for you.
 [thinking-in-react]: https://reactjs.org/docs/thinking-in-react.html
 [bootstrap]: https://getbootstrap.com
 
+## Alternatives
+
+The main drawback of this API is that it is somewhat implicit and relies on the components
+having the right `displayName`. It also doesn't work if the component relies on a `name`
+prop itself (because the library overloads its meaning).
+
+Note that it's entirely possible to use a similar pattern without this library in pure
+React by passing React elements as props (they don't have to be named `children`). Check out
+an example in [this comment](https://github.com/jxnblk/macro-components/issues/3#issuecomment-361971573)
+and see whether this works better for you.
+
 ## Usage
 
 `macro(elementFunction)`
