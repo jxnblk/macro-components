@@ -8,6 +8,8 @@ import macro, { Clone } from './src'
 const Box = props => <div {...props} />
 const Text = props => <div {...props} />
 const Heading = props => <h2 {...props} />
+const NoName = props => <pre {...props} />
+
 Box.displayName = 'Box'
 Text.displayName = 'Text'
 Heading.displayName = 'Heading'
@@ -211,4 +213,22 @@ test('accepts an optional childTypes argument', t => {
   t.is(json.children[1], undefined)
   t.true(stub.calledOnce)
   stub.restore()
+})
+
+test('element function can use component type as keys', t => {
+  const Card = macro(elements => (
+    <div>
+      {elements[Box]}
+      {elements[NoName]}
+    </div>
+  ))
+  const json = render(
+    <Card>
+      <Box>Hello</Box>
+      <NoName>Hi</NoName>
+    </Card>
+  ).toJSON()
+  t.is(json.children[0].children[0], 'Hello')
+  t.is(json.children[1].type, 'pre')
+  t.is(json.children[1].children[0], 'Hi')
 })

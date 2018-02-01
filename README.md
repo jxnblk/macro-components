@@ -139,6 +139,24 @@ use the `name` prop to specify which child element is inserted in a particular l
 </Banner>
 ```
 
+### Using component type
+
+For stricter usage, use the component type as a key when defining the macro-component.
+
+```jsx
+import Heading from './Heading'
+import Subhead from './Subhead'
+
+const Banner = macro(elements => (
+  <Box p={3} color='white' bg='blue'>
+    {elements[Heading]}
+    {elements[Subhead]}
+  </Box>
+))
+```
+
+This ensures that **only** the components that are intended to be used with the macro component can be passed as children.
+
 **elementFunction**
 
 The element function is similar to a React component, but receives an elements object as its first argument and props as its second one.
