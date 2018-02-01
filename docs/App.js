@@ -137,11 +137,11 @@ const App = props => (
     <ThemeProvider theme={theme}>
       <Font>
         <Header>
-          <Heading>macro-components</Heading>
-          <Subhead>
+          <Header.Heading>macro-components</Header.Heading>
+          <Header.Subhead>
             Create flexible layout and composite UI components without the need to define arbitrary custom props.
-          </Subhead>
-          <Pre>npm i macro-components</Pre>
+          </Header.Subhead>
+          <Header.Pre>npm i macro-components</Header.Pre>
         </Header>
       </Font>
     </ThemeProvider>

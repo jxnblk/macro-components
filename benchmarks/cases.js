@@ -40,9 +40,9 @@ const PlainCard = ({
 const macroComposed = () => {
   const html = renderToString(
     <Card>
-      <img src='kitten.png' />
-      <h2>Hello</h2>
-      <h3>Beep</h3>
+      <Card.img src='kitten.png' />
+      <Card.h2>Hello</Card.h2>
+      <Card.h3>Beep</Card.h3>
     </Card>
   )
 }

@@ -1,19 +1,26 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-export const macro = (components = {}, template, opts = {}) => {
-  const componentsArray = Object.keys(components).map(key => components[key])
+export const macro = (components = {}, template) => {
+  const componentKeys = Object.keys(components)
 
   class Macro extends React.Component {
     static propTypes = {
       children: (props, name) => {
-        if (name !== 'children') return console.log('wutf?', name)
         const children = React.Children.toArray(props.children)
         for (let i = 0; i < children.length; i++) {
           const child = children[i]
-          if (componentsArray.includes(child.type)) continue
+
+          if (componentKeys.includes(child.type.macroName)) continue
+
           return new Error(
-            'Invalid child component `' + child.type + '`'
+            [
+              'Invalid child component `',
+              child.type,
+              '`. ',
+              'Must be one of: ',
+              componentKeys.join(', ')
+            ].join('')
           )
         }
       }
@@ -22,13 +29,20 @@ export const macro = (components = {}, template, opts = {}) => {
     constructor (props) {
       super()
 
+      this.parseChildren = children =>
+        React.Children.toArray(children)
+          .reduce((a, child) => ({
+            ...a,
+            [child.type.macroName]: child
+          }), {})
+
       this.getElements = anyChildren => {
-        const children = React.Children.toArray(anyChildren)
+        const children = this.parseChildren(anyChildren)
 
         return Object.keys(components)
           .reduce((a, key) => ({
             ...a,
-            [key]: children.find(child => child.type.macroName === key)
+            [key]: children[key]
           }), {})
       }
 
