@@ -28,7 +28,7 @@ export const macro = (components = {}, template, opts = {}) => {
         return Object.keys(components)
           .reduce((a, key) => ({
             ...a,
-            [key]: children.find(child => child.type === Macro[key])
+            [key]: children.find(child => child.type.macroName === key)
           }), {})
       }
 
@@ -51,7 +51,9 @@ export const macro = (components = {}, template, opts = {}) => {
   }
 
   for (const key in components) {
-    Macro[key] = components[key]
+    // cloned to keep multiple components mapped properly
+    Macro[key] = props => React.createElement(components[key], props)
+    Macro[key].macroName = key
   }
 
   return Macro

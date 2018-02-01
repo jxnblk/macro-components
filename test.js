@@ -40,7 +40,7 @@ test('renders', t => {
   ))
   const json = render(
     <Card>
-      <h1>Hello</h1>
+      <Card.h1>Hello</Card.h1>
     </Card>
   ).toJSON()
   t.snapshot(json)
@@ -59,8 +59,8 @@ test('returns a component with React components', t => {
   t.is(typeof Card, 'function')
   const el = (
     <Card>
-      <Heading>Hello</Heading>
-      <Text>Beep</Text>
+      <Card.Heading>Hello</Card.Heading>
+      <Card.Text>Beep</Card.Text>
     </Card>
   )
   t.true(React.isValidElement(el))
@@ -87,8 +87,8 @@ test('swaps out nested child elements', t => {
   ))
   const json = render(
     <Nested>
-      <Heading>Hello</Heading>
-      <Text>Text</Text>
+      <Nested.Heading>Hello</Nested.Heading>
+      <Nested.Text>Text</Nested.Text>
     </Nested>
   ).toJSON()
   t.is(json.children[0].children[0].type, 'h2')
@@ -106,7 +106,7 @@ test('handles string children', t => {
   ))
   const json = render(
     <Card>
-      <Heading>Hi</Heading>
+      <Card.Heading>Hi</Card.Heading>
     </Card>
   ).toJSON()
   t.is(json.children[1], 'Hello text')
@@ -143,21 +143,25 @@ test('updates template on children update', t => {
   ))
   const card = TestRenderer.create(
     <Card>
-      <Card.Heading name='heading'>Nope</Card.Heading>
-      <Card.Subhead name='subhead'>Nope</Card.Subhead>
+      <Card.Heading>Nope</Card.Heading>
+      <Card.Subhead>Umm</Card.Subhead>
     </Card>
   )
+  const first = card.toJSON()
+  t.is(first.children[0].type, 'h2')
+  t.is(first.children[0].children[0], 'Nope')
+  t.is(first.children[1].children[0], 'Umm')
   card.update(
     <Card>
-      <Card.Heading name='heading'>Hello</Card.Heading>
-      <Card.Subhead name='subhead'>Beep</Card.Subhead>
+      <Card.Heading>Hello</Card.Heading>
+      <Card.Subhead>Beep</Card.Subhead>
     </Card>
   )
-  const json = card.toJSON()
-  t.is(json.children[0].type, 'h2')
-  t.is(json.children[0].children[0], 'Hello')
-  t.is(json.children[1].type, 'h2')
-  t.is(json.children[1].children[0], 'Beep')
+  const next = card.toJSON()
+  t.is(next.children[0].type, 'h2')
+  t.is(next.children[0].children[0], 'Hello')
+  t.is(next.children[1].type, 'h2')
+  t.is(next.children[1].children[0], 'Beep')
 })
 
 test('skips template update', t => {
@@ -169,7 +173,7 @@ test('skips template update', t => {
     </div>
   ))
   const children = (
-    <Heading>Hello</Heading>
+    <Card.Heading>Hello</Card.Heading>
   )
   const card = TestRenderer.create(
     <Card>
@@ -221,7 +225,7 @@ test.skip('accepts an optional childTypes argument', t => {
   })
   const json = render(
     <Card>
-      <Heading>Hello</Heading>
+      <Card.Heading>Hello</Card.Heading>
       <h2>Nope</h2>
     </Card>
   ).toJSON()
