@@ -1,15 +1,15 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-export const macro = (template, childTypes) => {
+export const macro = (template, opts = {}) => {
   class Macro extends React.Component {
     static propTypes = {
-      children: Array.isArray(childTypes)
+      children: Array.isArray(opts.childTypes)
         ? (props, name) => {
           const children = React.Children.toArray(props.children)
           for (let i = 0; i < children.length; i++) {
             const child = children[i]
-            if (childTypes.includes(child.type)) continue
+            if (opts.childTypes.includes(child.type)) continue
             return new Error(
               'Invalid child component `' + child.type + '`'
             )

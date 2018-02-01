@@ -192,13 +192,15 @@ test('Clone returns false with no element', t => {
   t.is(json, null)
 })
 
-test('accepts a childTypes argument', t => {
+test('accepts an optional childTypes argument', t => {
   const stub = sinon.stub(console, 'error')
   const Card = macro(({ Heading }) => (
     <div>
       {Heading}
     </div>
-  ), [ Heading ])
+  ), {
+    childTypes: [ Heading ]
+  })
   const json = render(
     <Card>
       <Heading>Hello</Heading>

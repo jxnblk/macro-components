@@ -233,7 +233,8 @@ const Header = macro(({ Heading, Text }) => (
 
 ### Adding propTypes checks
 
-To help ensure that the correct child components are passed to the macro-component, pass an array of components as the second argument to the `macro` function.
+To help ensure that the correct child components are passed to the macro-component,
+pass a second options argument with an array of components as `childTypes` to the `macro` function.
 
 ```jsx
 import Heading from './Heading'
@@ -244,13 +245,15 @@ const Banner = macro(({ Heading, Subhead }) => (
     {Heading}
     {Subhead}
   </Box>
-), [
-  // define which components are valid children
-  // note that these are from the module scope,
-  // not the element function
-  Heading,
-  Subhead
-])
+), {
+  childTypes: [
+    // define which components are valid children
+    // note that these are from the module scope,
+    // not the element function
+    Heading,
+    Subhead
+  ]
+})
 ```
 
 ---
