@@ -9,11 +9,13 @@ export const macro = template => {
         React.Children.toArray(children)
           .map(child => ({
             key: getName(child),
+            type: child.type,
             element: child
           }))
           .reduce((a, b) => ({
             ...a,
-            [b.key]: b.element
+            [b.key]: b.element,
+            [b.type]: b.element
           }), {})
 
       this.state = {
