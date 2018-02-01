@@ -1,7 +1,23 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 
-export const macro = template => {
+export const macro = (template, childTypes) => {
   class Macro extends React.Component {
+    static propTypes = {
+      children: Array.isArray(childTypes)
+        ? (props, name) => {
+          const children = React.Children.toArray(props.children)
+          for (let i = 0; i < children.length; i++) {
+            const child = children[i]
+            if (childTypes.includes(child.type)) continue
+            return new Error(
+              'Invalid child component `' + child.type + '`'
+            )
+          }
+        }
+        : PropTypes.node
+    }
+
     constructor (props) {
       super()
 
@@ -32,6 +48,7 @@ export const macro = template => {
       return template(elements, this.props)
     }
   }
+
   return Macro
 }
 

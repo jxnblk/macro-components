@@ -2,6 +2,7 @@ import test from 'ava'
 import React from 'react'
 import TestRenderer, { create as render } from 'react-test-renderer'
 import util from 'util'
+import sinon from 'sinon'
 import macro, { Clone } from './src'
 
 const Box = props => <div {...props} />
@@ -188,3 +189,21 @@ test('Clone returns false with no element', t => {
   t.is(json, null)
 })
 
+test('accepts a childTypes argument', t => {
+  const stub = sinon.stub(console, 'error')
+  const Card = macro(({ Heading }) => (
+    <div>
+      {Heading}
+    </div>
+  ), [ Heading ])
+  const json = render(
+    <Card>
+      <Heading>Hello</Heading>
+      <h2>Nope</h2>
+    </Card>
+  ).toJSON()
+  t.is(json.children[0].type, 'h2')
+  t.is(json.children[1], undefined)
+  t.true(stub.calledOnce)
+  stub.restore()
+})
