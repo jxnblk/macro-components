@@ -38,6 +38,7 @@
     "react": "^16.0.0",
     "react-dom": "^16.0.0",
     "react-test-renderer": "^16.0.0",
+    "sinon": "^4.2.2",
     "styled-components": "^2.2.3",
     "styled-system": "^1.0.8",
     "system-components": "^1.1.1"
@@ -51,11 +52,11 @@
   "bundlesize": [
     {
       "path": "./src/index.js",
-      "maxSize": "0.5 kb"
+      "maxSize": "0.75 kb"
     },
     {
       "path": "./dist/index.js",
-      "maxSize": "1.5 kb"
+      "maxSize": "1.75 kb"
     }
   ]
 }
