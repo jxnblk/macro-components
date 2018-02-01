@@ -8,6 +8,9 @@ import macro, { Clone } from './src'
 const Box = props => <div {...props} />
 const Text = props => <div {...props} />
 const Heading = props => <h2 {...props} />
+Box.displayName = 'Box'
+Text.displayName = 'Text'
+Heading.displayName = 'Heading'
 
 test('returns a component', t => {
   const Card = macro(({ h1, div }) => (
