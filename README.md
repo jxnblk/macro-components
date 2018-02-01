@@ -155,7 +155,7 @@ const Banner = macro(elements => (
 ))
 ```
 
-This ensures that **only** the elements that are intended to be used with the macro component can be passed as children.
+This ensures that **only** the components that are intended to be used with the macro component can be passed as children.
 
 **elementFunction**
 
