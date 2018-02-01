@@ -2,7 +2,15 @@ import React from 'react'
 import { renderToString } from 'react-dom/server'
 import macro from '../src'
 
-const Card = macro(({
+const img = 'img'
+const h2 = 'h2'
+const h3 = 'h3'
+
+const Card = macro({
+  img,
+  h2,
+  h3
+}, ({
   img,
   h2,
   h3

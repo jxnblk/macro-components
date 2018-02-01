@@ -1,38 +1,36 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-export const macro = (template, opts = {}) => {
+export const macro = (components = {}, template, opts = {}) => {
+  const componentsArray = Object.keys(components).map(key => components[key])
+
   class Macro extends React.Component {
     static propTypes = {
-      children: Array.isArray(opts.childTypes)
-        ? (props, name) => {
-          const children = React.Children.toArray(props.children)
-          for (let i = 0; i < children.length; i++) {
-            const child = children[i]
-            if (opts.childTypes.includes(child.type)) continue
-            return new Error(
-              'Invalid child component `' + child.type + '`'
-            )
-          }
+      children: (props, name) => {
+        if (name !== 'children') return console.log('wutf?', name)
+        const children = React.Children.toArray(props.children)
+        for (let i = 0; i < children.length; i++) {
+          const child = children[i]
+          if (componentsArray.includes(child.type)) continue
+          return new Error(
+            'Invalid child component `' + child.type + '`'
+          )
         }
-        : PropTypes.node
+      }
     }
 
     constructor (props) {
       super()
 
-      this.getElements = children =>
-        React.Children.toArray(children)
-          .map(child => ({
-            key: getName(child),
-            type: child.type,
-            element: child
-          }))
-          .reduce((a, b) => ({
+      this.getElements = anyChildren => {
+        const children = React.Children.toArray(anyChildren)
+
+        return Object.keys(components)
+          .reduce((a, key) => ({
             ...a,
-            [b.key]: b.element,
-            [b.type]: b.element
+            [key]: children.find(child => child.type === Macro[key])
           }), {})
+      }
 
       this.state = {
         elements: this.getElements(props.children)
@@ -47,18 +45,17 @@ export const macro = (template, opts = {}) => {
 
     render () {
       const { elements } = this.state
+
       return template(elements, this.props)
     }
   }
 
+  for (const key in components) {
+    Macro[key] = components[key]
+  }
+
   return Macro
 }
-
-export const getName = el => el.props.name
-  ? el.props.name
-  : typeof el.type === 'function'
-    ? el.type.displayName
-    : el.type
 
 export const Clone = ({ element, ...props }) => element
   ? React.cloneElement(element, { ...props, ...element.props })
