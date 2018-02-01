@@ -9,6 +9,10 @@ const Text = props => <div {...props} />
 const Heading = props => <h2 {...props} />
 const NoName = props => <pre {...props} />
 
+Box.displayName = 'Box'
+Text.displayName = 'Text'
+Heading.displayName = 'Heading'
+
 test('returns a component', t => {
   const Card = macro(({ h1, div }) => (
     <div>

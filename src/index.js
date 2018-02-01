@@ -40,7 +40,7 @@ export const macro = template => {
 export const getName = el => el.props.name
   ? el.props.name
   : typeof el.type === 'function'
-    ? el.type.displayName || el.type.name
+    ? el.type.displayName
     : el.type
 
 export const Clone = ({ element, ...props }) => element
