@@ -112,25 +112,6 @@ test('handles string children', t => {
   t.is(json.children[1], 'Hello text')
 })
 
-test.skip('accepts a name prop to map to arguments', t => {
-  const Card = macro(({ heading, subhead }) => (
-    <div>
-      {heading}
-      {subhead}
-    </div>
-  ))
-  const json = render(
-    <Card>
-      <Heading name='heading'>Hello</Heading>
-      <Heading name='subhead'>Beep</Heading>
-    </Card>
-  ).toJSON()
-  t.is(json.children[0].type, 'h2')
-  t.is(json.children[0].children[0], 'Hello')
-  t.is(json.children[1].type, 'h2')
-  t.is(json.children[1].children[0], 'Beep')
-})
-
 test('updates template on children update', t => {
   const Card = macro({
     Heading,
@@ -212,43 +193,4 @@ test('Clone returns false with no element', t => {
     />
   ).toJSON()
   t.is(json, null)
-})
-
-test.skip('accepts an optional childTypes argument', t => {
-  const stub = sinon.stub(console, 'error')
-  const Card = macro(({ Heading }) => (
-    <div>
-      {Heading}
-    </div>
-  ), {
-    childTypes: [ Heading ]
-  })
-  const json = render(
-    <Card>
-      <Card.Heading>Hello</Card.Heading>
-      <h2>Nope</h2>
-    </Card>
-  ).toJSON()
-  t.is(json.children[0].type, 'h2')
-  t.is(json.children[1], undefined)
-  t.true(stub.calledOnce)
-  stub.restore()
-})
-
-test.skip('element function can use component type as keys', t => {
-  const Card = macro(elements => (
-    <div>
-      {elements[Box]}
-      {elements[NoName]}
-    </div>
-  ))
-  const json = render(
-    <Card>
-      <Box>Hello</Box>
-      <NoName>Hi</NoName>
-    </Card>
-  ).toJSON()
-  t.is(json.children[0].children[0], 'Hello')
-  t.is(json.children[1].type, 'pre')
-  t.is(json.children[1].children[0], 'Hi')
 })

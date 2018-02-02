@@ -31,19 +31,19 @@ export const macro = (components = {}, template) => {
 
       this.parseChildren = children =>
         React.Children.toArray(children)
-          .reduce((a, child) => ({
-            ...a,
-            [child.type.macroName]: child
-          }), {})
+          .reduce((a, child) => {
+            a[child.type.macroName] = child
+            return a
+          }, {})
 
       this.getElements = anyChildren => {
         const children = this.parseChildren(anyChildren)
 
-        return Object.keys(components)
-          .reduce((a, key) => ({
-            ...a,
-            [key]: children[key]
-          }), {})
+        return componentKeys
+          .reduce((a, key) => {
+            a[key] = children[key]
+            return a
+          }, {})
       }
 
       this.state = {
