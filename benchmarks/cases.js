@@ -2,6 +2,7 @@ import React from 'react'
 import { renderToString } from 'react-dom/server'
 import macro from '../src'
 import scopedMacro from '../src/scoped'
+import slotMacro, { Slot } from '../src/slots'
 
 const img = 'img'
 const h2 = 'h2'
@@ -30,6 +31,14 @@ const Scoped = scopedMacro({
     {h3}
   </div>
 ))
+
+const Slotted = slotMacro(
+  <div className='Card'>
+    <Slot component='img' />
+    <Slot component='h2' />
+    <Slot component='h3' />
+  </div>
+)
 
 const PlainCard = ({
   image,
@@ -66,6 +75,16 @@ const macroScopedComposed = () => {
   )
 }
 
+const macroSlotComposed = () => {
+  const html = renderToString(
+    <Slotted>
+      <img src='kitten.png' />
+      <h2>Hello</h2>
+      <h3>Beep</h3>
+    </Slotted>
+  )
+}
+
 const plainProps = () => {
   const html = renderToString(
     <PlainCard
@@ -89,6 +108,7 @@ const plainComposed = () => {
 module.exports = {
   macroComposed,
   macroScopedComposed,
+  macroSlotComposed,
   plainProps,
   plainComposed,
 }

@@ -4,6 +4,7 @@ const suite = new Benchmark.Suite
 const {
   macroComposed,
   macroScopedComposed,
+  macroSlotComposed,
   plainProps,
   plainComposed
 } = require('./cases')
@@ -11,6 +12,7 @@ const {
 suite
   .add('macro composed', macroComposed)
   .add('macro/scoped composed', macroScopedComposed)
+  .add('macro/slots composed', macroSlotComposed)
   .add('plain react props', plainProps)
   .add('plain react composed', plainComposed)
   .on('cycle', e => {
