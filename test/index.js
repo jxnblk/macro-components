@@ -3,22 +3,18 @@ import React from 'react'
 import TestRenderer, { create as render } from 'react-test-renderer'
 import util from 'util'
 import sinon from 'sinon'
-import macro, { Clone } from './src'
+import macro, { Clone } from '../src'
 
 const Box = props => <div {...props} />
 const Text = props => <div {...props} />
 const Heading = props => <h2 {...props} />
-const NoName = props => <pre {...props} />
 
 Box.displayName = 'Box'
 Text.displayName = 'Text'
 Heading.displayName = 'Heading'
 
 test('returns a component', t => {
-  const Card = macro({
-    h1: 'h1',
-    div: 'div',
-  }, ({ h1, div }) => (
+  const Card = macro(({ h1, div }) => (
     <div>
       {h1}
       {div}
@@ -29,10 +25,7 @@ test('returns a component', t => {
 })
 
 test('renders', t => {
-  const Card = macro({
-    h1: 'h1',
-    div: 'div'
-  }, ({ h1, div }) => (
+  const Card = macro(({ h1, div }) => (
     <div>
       {h1}
       {div}
@@ -40,17 +33,14 @@ test('renders', t => {
   ))
   const json = render(
     <Card>
-      <Card.h1>Hello</Card.h1>
+      <h1>Hello</h1>
     </Card>
   ).toJSON()
   t.snapshot(json)
 })
 
 test('returns a component with React components', t => {
-  const Card = macro({
-    Heading,
-    Text
-  }, ({ Heading, Text }) => (
+  const Card = macro(({ Heading, Text }) => (
     <div>
       {Heading}
       {Text}
@@ -59,8 +49,8 @@ test('returns a component with React components', t => {
   t.is(typeof Card, 'function')
   const el = (
     <Card>
-      <Card.Heading>Hello</Card.Heading>
-      <Card.Text>Beep</Card.Text>
+      <Heading>Hello</Heading>
+      <Text>Beep</Text>
     </Card>
   )
   t.true(React.isValidElement(el))
@@ -74,10 +64,7 @@ test('returns a component with React components', t => {
 })
 
 test('swaps out nested child elements', t => {
-  const Nested = macro({
-    Heading,
-    Text,
-  }, ({ Heading, Text }) => (
+  const Nested = macro(({ Heading, Text }) => (
     <Box>
       <Box>
         {Heading}
@@ -87,8 +74,8 @@ test('swaps out nested child elements', t => {
   ))
   const json = render(
     <Nested>
-      <Nested.Heading>Hello</Nested.Heading>
-      <Nested.Text>Text</Nested.Text>
+      <Heading>Hello</Heading>
+      <Text>Text</Text>
     </Nested>
   ).toJSON()
   t.is(json.children[0].children[0].type, 'h2')
@@ -98,7 +85,7 @@ test('swaps out nested child elements', t => {
 })
 
 test('handles string children', t => {
-  const Card = macro({ Heading }, ({ Heading }) => (
+  const Card = macro(({ Heading }) => (
     <div>
       {Heading}
       Hello text
@@ -106,17 +93,16 @@ test('handles string children', t => {
   ))
   const json = render(
     <Card>
-      <Card.Heading>Hi</Card.Heading>
+      <Heading>Hi</Heading>
     </Card>
   ).toJSON()
   t.is(json.children[1], 'Hello text')
 })
 
 test('updates template on children update', t => {
-  const Card = macro({
-    Heading,
-    Subhead: Heading
-  }, ({ Heading, Subhead }) => (
+  const Subhead = props => <Heading {...props} />
+  Subhead.displayName = 'Subhead'
+  const Card = macro(({ Heading, Subhead }) => (
     <div>
       {Heading}
       {Subhead}
@@ -124,8 +110,8 @@ test('updates template on children update', t => {
   ))
   const card = TestRenderer.create(
     <Card>
-      <Card.Heading>Nope</Card.Heading>
-      <Card.Subhead>Umm</Card.Subhead>
+      <Heading>Nope</Heading>
+      <Subhead>Umm</Subhead>
     </Card>
   )
   const first = card.toJSON()
@@ -134,8 +120,8 @@ test('updates template on children update', t => {
   t.is(first.children[1].children[0], 'Umm')
   card.update(
     <Card>
-      <Card.Heading>Hello</Card.Heading>
-      <Card.Subhead>Beep</Card.Subhead>
+      <Heading>Hello</Heading>
+      <Subhead>Beep</Subhead>
     </Card>
   )
   const next = card.toJSON()
@@ -146,15 +132,13 @@ test('updates template on children update', t => {
 })
 
 test('skips template update', t => {
-  const Card = macro({
-    Heading
-  }, ({ Heading }) => (
+  const Card = macro(({ Heading }) => (
     <div>
       {Heading}
     </div>
   ))
   const children = (
-    <Card.Heading>Hello</Card.Heading>
+    <Heading>Hello</Heading>
   )
   const card = TestRenderer.create(
     <Card>

@@ -1,20 +1,29 @@
 import React from 'react'
 import { renderToString } from 'react-dom/server'
 import macro from '../src'
+import scopedMacro from '../src/scoped'
 
 const img = 'img'
 const h2 = 'h2'
 const h3 = 'h3'
 
-const Card = macro({
-  img,
-  h2,
-  h3
-}, ({
+const Card = macro(({
   img,
   h2,
   h3
 }) => (
+  <div className='Card'>
+    {img}
+    {h2}
+    {h3}
+  </div>
+))
+
+const Scoped = scopedMacro({
+  img,
+  h2,
+  h3
+})(({ img, h2, h3 }) => (
   <div className='Card'>
     {img}
     {h2}
@@ -40,10 +49,20 @@ const PlainCard = ({
 const macroComposed = () => {
   const html = renderToString(
     <Card>
-      <Card.img src='kitten.png' />
-      <Card.h2>Hello</Card.h2>
-      <Card.h3>Beep</Card.h3>
+      <img src='kitten.png' />
+      <h2>Hello</h2>
+      <h3>Beep</h3>
     </Card>
+  )
+}
+
+const macroScopedComposed = () => {
+  const html = renderToString(
+    <Scoped>
+      <Scoped.img src='kitten.png' />
+      <Scoped.h2>Hello</Scoped.h2>
+      <Scoped.h3>Beep</Scoped.h3>
+    </Scoped>
   )
 }
 
@@ -69,6 +88,7 @@ const plainComposed = () => {
 
 module.exports = {
   macroComposed,
+  macroScopedComposed,
   plainProps,
   plainComposed,
 }
