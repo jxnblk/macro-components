@@ -1,4 +1,5 @@
 import React from 'react'
+import connect from 'refunk'
 import styled, { ThemeProvider, injectGlobal } from 'styled-components'
 import sys from 'system-components'
 import macro, { Clone } from '../src'
@@ -22,7 +23,7 @@ const Box = sys(
   'color'
 )
 
-// Box.displayName = 'Box'
+Box.displayName = 'Box'
 
 const Flex = sys({
   align: 'center',
@@ -43,7 +44,7 @@ const Text = sys(
   'color'
 )
 
-// Text.displayName = 'Text'
+Text.displayName = 'Text'
 
 const Heading = sys({
   is: 'h2',
@@ -59,10 +60,10 @@ const Heading = sys({
   'color'
 )
 
-// Heading.displayName = 'Heading'
+Heading.displayName = 'Heading'
 
 const Subhead = props => <Heading {...props} fontWeight={600} />
-// Subhead.displayName = 'Subhead'
+Subhead.displayName = 'Subhead'
 
 const Pre = sys({
   is: 'pre',
@@ -73,18 +74,14 @@ const Pre = sys({
   overflow: auto;
 `)
 
-// Pre.displayName = 'Pre'
+Pre.displayName = 'Pre'
 
 const Container = sys({
   // maxWidth: 1024,
   mx: 'auto'
 }, 'max-width: 1024px;')
 
-const Header = macro({
-  Heading,
-  Subhead,
-  Pre
-}, ({
+const Header = macro(({
   Heading,
   Subhead,
   Pre,
@@ -131,21 +128,40 @@ const theme = {
   colors
 }
 
-const App = props => (
+const App = connect(({
+  update,
+  count
+}) => (
   <React.Fragment>
     <title>macro-components</title>
     <ThemeProvider theme={theme}>
       <Font>
         <Header>
-          <Header.Heading>macro-components</Header.Heading>
-          <Header.Subhead>
+          <Heading>macro-components {count}</Heading>
+          <Subhead>
             Create flexible layout and composite UI components without the need to define arbitrary custom props.
-          </Header.Subhead>
-          <Header.Pre>npm i macro-components</Header.Pre>
+          </Subhead>
+          <Pre>npm i macro-components</Pre>
         </Header>
+        <button
+          onClick={e => update(dec)}
+          children='-'
+        />
+        <button
+          onClick={e => update(inc)}
+          children='+'
+        />
       </Font>
     </ThemeProvider>
   </React.Fragment>
-)
+))
+
+App.defaultProps = {
+  count: 0
+}
+
+const add = (key, n) => state => ({ [key]: state[key] + n })
+const inc = add('count', 1)
+const dec = add('count', -1)
 
 export default App

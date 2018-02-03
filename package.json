@@ -38,6 +38,7 @@
     "react": "^16.0.0",
     "react-dom": "^16.0.0",
     "react-test-renderer": "^16.0.0",
+    "refunk": "^2.2.4",
     "sinon": "^4.2.2",
     "styled-components": "^2.2.3",
     "styled-system": "^1.0.8",
