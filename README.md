@@ -319,6 +319,8 @@ To create layout components that are **not** coupled to specific child component
 
 The solutions below allow you to pass any arbitrary components as props or children.
 
+See [this discussion](https://github.com/jxnblk/macro-components/issues/3) for more.
+
 ```jsx
 // using custom props
 const MyLayout = ({
