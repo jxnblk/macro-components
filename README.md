@@ -96,6 +96,8 @@ const App = props => (
 - Help keep your component API surface area to a minimum
 - Works with *any* other React components
 
+**Note:** Macro components are intended to *only* work with specific child components. If you're wanting to define *slots*, see the [Alternatives](#alternatives) section below.
+
 ## Motivation
 
 Often it's best to use [React composition][composition] and `props.children`
@@ -306,6 +308,88 @@ const Header = macro(({ Heading, Subhead }) => (
 <Header>
   <Header.Heading>Hello</Header.Heading>
   <Header.Subhead>Subhead</Header.Subhead>
+</Header>
+```
+
+---
+
+### Alternatives
+
+To create layout components that are **not** coupled to specific child components, using props or ordered children is probably a simpler approach.
+
+The solutions below allow you to pass any arbitrary components as props or children.
+
+```jsx
+// using custom props
+const MyLayout = ({
+  left,
+  right
+}) => (
+  <Flex>
+    <Box width={128}>
+      {left}
+    </Box>
+    <Box width={1}>
+      {right}
+    </Box>
+  </Flex>
+)
+
+<MyLayout
+  left={(
+    <Image src='kitten.png' />
+  )}
+  right={(
+    <Text>Meow</Text>
+  )}
+/>
+```
+
+```jsx
+// using ordered children
+const Header = props => {
+  const [ first, second ] = React.Children.toArray(props.children)
+  return (
+    <Box p={3}>
+      {first}
+      {second}
+    </Box>
+  )
+}
+
+<Header>
+  <Heading>First</Heading>
+  <Text>Second</Text>
+</Header>
+```
+
+```jsx
+// using a children object
+const Header = ({
+  children: {
+    left,
+    right
+  }
+}) => (
+  <Flex>
+    <Box>
+      {left}
+    </Box>
+    <Box width={1}>
+      {right}
+    </Box>
+  </Flex>
+)
+
+<Header>
+  {{
+    left: (
+      <Image src='kitten.png' />
+    ),
+    right: (
+      <Text>Meow</Text>
+    )
+  }}
 </Header>
 ```
 
