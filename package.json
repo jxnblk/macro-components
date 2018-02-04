@@ -1,6 +1,6 @@
 {
   "name": "macro-components",
-  "version": "1.0.3",
+  "version": "2.0.0",
   "description": "Create flexible layout and composite UI components without the need to define arbitrary custom props.",
   "main": "dist/index.js",
   "scripts": {
