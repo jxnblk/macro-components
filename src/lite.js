@@ -1,5 +1,4 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 
 /*
  * This is the original, displayName-based implicit API

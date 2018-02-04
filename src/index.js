@@ -1,5 +1,4 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 
 export const macro = (components = {}) => template => {
   const componentKeys = Object.keys(components)
