@@ -18,7 +18,7 @@ test('returns a component', t => {
   const Card = macro({
     h1: 'h1',
     div: 'div',
-  }, ({ h1, div }) => (
+  })(({ h1, div }) => (
     <div>
       {h1}
       {div}
@@ -32,7 +32,7 @@ test('renders', t => {
   const Card = macro({
     h1: 'h1',
     div: 'div'
-  }, ({ h1, div }) => (
+  })(({ h1, div }) => (
     <div>
       {h1}
       {div}
@@ -50,7 +50,7 @@ test('returns a component with React components', t => {
   const Card = macro({
     Heading,
     Text
-  }, ({ Heading, Text }) => (
+  })(({ Heading, Text }) => (
     <div>
       {Heading}
       {Text}
@@ -77,7 +77,7 @@ test('swaps out nested child elements', t => {
   const Nested = macro({
     Heading,
     Text,
-  }, ({ Heading, Text }) => (
+  })(({ Heading, Text }) => (
     <Box>
       <Box>
         {Heading}
@@ -98,7 +98,7 @@ test('swaps out nested child elements', t => {
 })
 
 test('handles string children', t => {
-  const Card = macro({ Heading }, ({ Heading }) => (
+  const Card = macro({ Heading })(({ Heading }) => (
     <div>
       {Heading}
       Hello text
@@ -116,7 +116,7 @@ test('updates template on children update', t => {
   const Card = macro({
     Heading,
     Subhead: Heading
-  }, ({ Heading, Subhead }) => (
+  })(({ Heading, Subhead }) => (
     <div>
       {Heading}
       {Subhead}
@@ -148,7 +148,7 @@ test('updates template on children update', t => {
 test('skips template update', t => {
   const Card = macro({
     Heading
-  }, ({ Heading }) => (
+  })(({ Heading }) => (
     <div>
       {Heading}
     </div>

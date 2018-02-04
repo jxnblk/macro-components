@@ -1,17 +1,17 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-export const macro = (components = {}, template) => {
+export const macro = (components = {}) => template => {
   const componentKeys = Object.keys(components)
 
-  class Macro extends React.Component {
+  class MacroComponent extends React.Component {
     static propTypes = {
       children: (props, name) => {
         const children = React.Children.toArray(props.children)
         for (let i = 0; i < children.length; i++) {
           const child = children[i]
 
-          if (componentKeys.includes(child.type.macroName)) continue
+          if (components.hasOwnProperty(child.type.macroName)) continue
 
           return new Error(
             [
@@ -66,11 +66,13 @@ export const macro = (components = {}, template) => {
 
   for (const key in components) {
     // cloned to keep multiple components mapped properly
-    Macro[key] = props => React.createElement(components[key], props)
-    Macro[key].macroName = key
+    MacroComponent[key] = props => React.createElement(components[key], props)
+    MacroComponent[key].macroName = key
   }
 
-  return Macro
+  MacroComponent.isMacroComponent = true
+
+  return MacroComponent
 }
 
 export const Clone = ({ element, ...props }) => element
