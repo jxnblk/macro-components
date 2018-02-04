@@ -1,24 +1,39 @@
 import React from 'react'
 import { renderToString } from 'react-dom/server'
-import macro from '../src'
+import Macro from '../src'
+import lite from '../src/lite'
 
-const img = 'img'
-const h2 = 'h2'
-const h3 = 'h3'
+const Img = props => <img {...props} />
+const H2 = props => <h2 {...props} />
+const H3 = props => <h3 {...props} />
 
-const Card = macro({
-  img,
-  h2,
-  h3
-}, ({
-  img,
-  h2,
-  h3
+Img.displayName = 'Img'
+H2.displayName = 'H2'
+H3.displayName = 'H3'
+
+const macro = Macro({ Img, H2, H3 })
+
+const Card = macro(({
+  Img,
+  H2,
+  H3
 }) => (
   <div className='Card'>
-    {img}
-    {h2}
-    {h3}
+    {Img}
+    {H2}
+    {H3}
+  </div>
+))
+
+const LiteCard = lite(({
+  Img,
+  H2,
+  H3
+}) => (
+  <div className='Card'>
+    {Img}
+    {H2}
+    {H3}
   </div>
 ))
 
@@ -40,10 +55,20 @@ const PlainCard = ({
 const macroComposed = () => {
   const html = renderToString(
     <Card>
-      <Card.img src='kitten.png' />
-      <Card.h2>Hello</Card.h2>
-      <Card.h3>Beep</Card.h3>
+      <Card.Img src='kitten.png' />
+      <Card.H2>Hello</Card.H2>
+      <Card.H3>Beep</Card.H3>
     </Card>
+  )
+}
+
+const macroLiteComposed = () => {
+  const html = renderToString(
+    <LiteCard>
+      <Img src='kitten.png' />
+      <H2>Hello</H2>
+      <H3>Beep</H3>
+    </LiteCard>
   )
 }
 
@@ -69,6 +94,7 @@ const plainComposed = () => {
 
 module.exports = {
   macroComposed,
+  macroLiteComposed,
   plainProps,
   plainComposed,
 }

@@ -131,7 +131,7 @@ const Banner = Macro({
   // pass a components object
   Heading,
   Subhead
-}, ({
+})(({
   // the element function receives child elements
   // named according to the components object
   Heading,
@@ -145,7 +145,7 @@ const Banner = Macro({
 ```
 
 The `elementFunction` argument is called with an object of elements
-based on the `componentsObject` passed to the Macro function
+based on the `componentsObject` passed to the Macro function.
 Using the Banner component above would look something like the following.
 
 ```jsx
@@ -159,7 +159,11 @@ const App = () => (
 )
 ```
 
-**elementFunction**
+### componentsObject
+
+The components object is used to defined which components the macro component will accept as children.
+
+### elementFunction
 
 The element function is similar to a React component, but receives an elements object as its first argument and props as its second one.
 The elements object is created from its children and is intended to make encapsulating composition and element structures easier.
@@ -274,6 +278,35 @@ const Header = macro(({ Heading, Text }) => (
     />
   </Box>
 ))
+```
+
+### Using a Component Multiple Times
+
+To use the same component twice, give it a unique key in the componentsObject.
+
+```jsx
+import React from 'react'
+import Macro from 'macro-components'
+import { Heading } from './ui'
+
+const macro = Macro({
+  Heading: Heading,
+  Subhead: Heading
+})
+
+const Header = macro(({ Heading, Subhead }) => (
+  <Box p={2}>
+    {Heading}
+    {Subhead}
+  </Box>
+))
+```
+
+```jsx
+<Header>
+  <Header.Heading>Hello</Header.Heading>
+  <Header.Subhead>Subhead</Header.Subhead>
+</Header>
 ```
 
 ---
