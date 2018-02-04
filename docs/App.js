@@ -22,7 +22,7 @@ const Box = sys(
   'color'
 )
 
-Box.displayName = 'Box'
+// Box.displayName = 'Box'
 
 const Flex = sys({
   align: 'center',
@@ -43,7 +43,7 @@ const Text = sys(
   'color'
 )
 
-Text.displayName = 'Text'
+// Text.displayName = 'Text'
 
 const Heading = sys({
   is: 'h2',
@@ -59,10 +59,10 @@ const Heading = sys({
   'color'
 )
 
-Heading.displayName = 'Heading'
+// Heading.displayName = 'Heading'
 
 const Subhead = props => <Heading {...props} fontWeight={600} />
-Subhead.displayName = 'Subhead'
+// Subhead.displayName = 'Subhead'
 
 const Pre = sys({
   is: 'pre',
@@ -73,14 +73,18 @@ const Pre = sys({
   overflow: auto;
 `)
 
-Pre.displayName = 'Pre'
+// Pre.displayName = 'Pre'
 
 const Container = sys({
   // maxWidth: 1024,
   mx: 'auto'
 }, 'max-width: 1024px;')
 
-const Header = macro(({
+const Header = macro({
+  Heading,
+  Subhead,
+  Pre
+}, ({
   Heading,
   Subhead,
   Pre,
@@ -133,11 +137,11 @@ const App = props => (
     <ThemeProvider theme={theme}>
       <Font>
         <Header>
-          <Heading>macro-components</Heading>
-          <Subhead>
+          <Header.Heading>macro-components</Header.Heading>
+          <Header.Subhead>
             Create flexible layout and composite UI components without the need to define arbitrary custom props.
-          </Subhead>
-          <Pre>npm i macro-components</Pre>
+          </Header.Subhead>
+          <Header.Pre>npm i macro-components</Header.Pre>
         </Header>
       </Font>
     </ThemeProvider>

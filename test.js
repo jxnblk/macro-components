@@ -15,7 +15,10 @@ Text.displayName = 'Text'
 Heading.displayName = 'Heading'
 
 test('returns a component', t => {
-  const Card = macro(({ h1, div }) => (
+  const Card = macro({
+    h1: 'h1',
+    div: 'div',
+  })(({ h1, div }) => (
     <div>
       {h1}
       {div}
@@ -26,7 +29,10 @@ test('returns a component', t => {
 })
 
 test('renders', t => {
-  const Card = macro(({ h1, div }) => (
+  const Card = macro({
+    h1: 'h1',
+    div: 'div'
+  })(({ h1, div }) => (
     <div>
       {h1}
       {div}
@@ -34,14 +40,17 @@ test('renders', t => {
   ))
   const json = render(
     <Card>
-      <h1>Hello</h1>
+      <Card.h1>Hello</Card.h1>
     </Card>
   ).toJSON()
   t.snapshot(json)
 })
 
 test('returns a component with React components', t => {
-  const Card = macro(({ Heading, Text }) => (
+  const Card = macro({
+    Heading,
+    Text
+  })(({ Heading, Text }) => (
     <div>
       {Heading}
       {Text}
@@ -50,8 +59,8 @@ test('returns a component with React components', t => {
   t.is(typeof Card, 'function')
   const el = (
     <Card>
-      <Heading>Hello</Heading>
-      <Text>Beep</Text>
+      <Card.Heading>Hello</Card.Heading>
+      <Card.Text>Beep</Card.Text>
     </Card>
   )
   t.true(React.isValidElement(el))
@@ -65,7 +74,10 @@ test('returns a component with React components', t => {
 })
 
 test('swaps out nested child elements', t => {
-  const Nested = macro(({ Heading, Text }) => (
+  const Nested = macro({
+    Heading,
+    Text,
+  })(({ Heading, Text }) => (
     <Box>
       <Box>
         {Heading}
@@ -75,8 +87,8 @@ test('swaps out nested child elements', t => {
   ))
   const json = render(
     <Nested>
-      <Heading>Hello</Heading>
-      <Text>Text</Text>
+      <Nested.Heading>Hello</Nested.Heading>
+      <Nested.Text>Text</Nested.Text>
     </Nested>
   ).toJSON()
   t.is(json.children[0].children[0].type, 'h2')
@@ -86,7 +98,7 @@ test('swaps out nested child elements', t => {
 })
 
 test('handles string children', t => {
-  const Card = macro(({ Heading }) => (
+  const Card = macro({ Heading })(({ Heading }) => (
     <div>
       {Heading}
       Hello text
@@ -94,66 +106,55 @@ test('handles string children', t => {
   ))
   const json = render(
     <Card>
-      <Heading>Hi</Heading>
+      <Card.Heading>Hi</Card.Heading>
     </Card>
   ).toJSON()
   t.is(json.children[1], 'Hello text')
 })
 
-test('accepts a name prop to map to arguments', t => {
-  const Card = macro(({ heading, subhead }) => (
-    <div>
-      {heading}
-      {subhead}
-    </div>
-  ))
-  const json = render(
-    <Card>
-      <Heading name='heading'>Hello</Heading>
-      <Heading name='subhead'>Beep</Heading>
-    </Card>
-  ).toJSON()
-  t.is(json.children[0].type, 'h2')
-  t.is(json.children[0].children[0], 'Hello')
-  t.is(json.children[1].type, 'h2')
-  t.is(json.children[1].children[0], 'Beep')
-})
-
 test('updates template on children update', t => {
-  const Card = macro(({ heading, subhead }) => (
+  const Card = macro({
+    Heading,
+    Subhead: Heading
+  })(({ Heading, Subhead }) => (
     <div>
-      {heading}
-      {subhead}
+      {Heading}
+      {Subhead}
     </div>
   ))
   const card = TestRenderer.create(
     <Card>
-      <Heading name='heading'>Nope</Heading>
-      <Heading name='subhead'>Nope</Heading>
+      <Card.Heading>Nope</Card.Heading>
+      <Card.Subhead>Umm</Card.Subhead>
     </Card>
   )
+  const first = card.toJSON()
+  t.is(first.children[0].type, 'h2')
+  t.is(first.children[0].children[0], 'Nope')
+  t.is(first.children[1].children[0], 'Umm')
   card.update(
     <Card>
-      <Heading name='heading'>Hello</Heading>
-      <Heading name='subhead'>Beep</Heading>
+      <Card.Heading>Hello</Card.Heading>
+      <Card.Subhead>Beep</Card.Subhead>
     </Card>
   )
-  const json = card.toJSON()
-  // card.
-  t.is(json.children[0].type, 'h2')
-  t.is(json.children[0].children[0], 'Hello')
-  t.is(json.children[1].type, 'h2')
-  t.is(json.children[1].children[0], 'Beep')
+  const next = card.toJSON()
+  t.is(next.children[0].type, 'h2')
+  t.is(next.children[0].children[0], 'Hello')
+  t.is(next.children[1].type, 'h2')
+  t.is(next.children[1].children[0], 'Beep')
 })
 
 test('skips template update', t => {
-  const Card = macro(({ Heading }) => (
+  const Card = macro({
+    Heading
+  })(({ Heading }) => (
     <div>
       {Heading}
     </div>
   ))
   const children = (
-    <Heading>Hello</Heading>
+    <Card.Heading>Hello</Card.Heading>
   )
   const card = TestRenderer.create(
     <Card>
@@ -192,43 +193,4 @@ test('Clone returns false with no element', t => {
     />
   ).toJSON()
   t.is(json, null)
-})
-
-test('accepts an optional childTypes argument', t => {
-  const stub = sinon.stub(console, 'error')
-  const Card = macro(({ Heading }) => (
-    <div>
-      {Heading}
-    </div>
-  ), {
-    childTypes: [ Heading ]
-  })
-  const json = render(
-    <Card>
-      <Heading>Hello</Heading>
-      <h2>Nope</h2>
-    </Card>
-  ).toJSON()
-  t.is(json.children[0].type, 'h2')
-  t.is(json.children[1], undefined)
-  t.true(stub.calledOnce)
-  stub.restore()
-})
-
-test('element function can use component type as keys', t => {
-  const Card = macro(elements => (
-    <div>
-      {elements[Box]}
-      {elements[NoName]}
-    </div>
-  ))
-  const json = render(
-    <Card>
-      <Box>Hello</Box>
-      <NoName>Hi</NoName>
-    </Card>
-  ).toJSON()
-  t.is(json.children[0].children[0], 'Hello')
-  t.is(json.children[1].type, 'pre')
-  t.is(json.children[1].children[0], 'Hi')
 })

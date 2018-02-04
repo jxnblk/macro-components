@@ -21,20 +21,32 @@ npm i macro-components
 ```jsx
 import React from 'react'
 import styled from 'styled-components'
-import macro from 'macro-components'
+import Macro from 'macro-components'
 import { space, fontSize, color } from 'styled-system'
 
 // Define some styled-components
 const Box = styled.div`${space} ${fontSize} ${color}`
-
-// Ensure components have a `displayName`
 Box.displayName = 'Box'
+
+const Image = styled.img`
+  max-width: 100%;
+  height: auto;
+  ${space}
+`
+Image.displayName = 'Image'
 
 const Heading = styled.h2`${space} ${fontSize} ${color}`
 Heading.displayName = 'Heading'
 
 const Text = styled.div`${space} ${fontSize} ${color}`
 Text.displayName = 'Text'
+
+// create a macro function with the UI components you intend to use
+const macro = Macro({
+  Image,
+  Heading,
+  Text
+})
 
 // Create a macro-component
 const MediaObject = macro(({
@@ -52,6 +64,13 @@ const MediaObject = macro(({
     </Box>
   </Flex>
 ))
+```
+
+```jsx
+import MediaObject from './MediaObject'
+
+// get the macro component's child components
+const { Image, Heading, Text } = MediaObject
 
 // Use the macro-component by passing the components as children
 const App = props => (
@@ -76,6 +95,8 @@ const App = props => (
 - Encapsulate layout structure in composable components
 - Help keep your component API surface area to a minimum
 - Works with *any* other React components
+
+**Note:** Macro components are intended to *only* work with specific child components. If you're wanting to define *slots*, see the [Alternatives](#alternatives) section below.
 
 ## Motivation
 
@@ -103,12 +124,18 @@ then this module is intended for you.
 
 ## Usage
 
-`macro(elementFunction)`
+`Macro(componentsObject)(elementFunction)`
 
 Returns a React component with a composable API that keeps tree layout structure.
 
 ```jsx
-const Banner = macro(({
+const Banner = Macro({
+  // pass a components object
+  Heading,
+  Subhead
+})(({
+  // the element function receives child elements
+  // named according to the components object
   Heading,
   Subhead
 }) => (
@@ -119,45 +146,26 @@ const Banner = macro(({
 )
 ```
 
-By default, the `elementFunction` argument is called with an object of elements based on the element type or component `displayName`.
+The `elementFunction` argument is called with an object of elements
+based on the `componentsObject` passed to the Macro function.
 Using the Banner component above would look something like the following.
 
 ```jsx
-<Banner>
-  <Heading>Hello</Heading>
-  <Subhead>Subhead</Subhead>
-</Banner>
+import Banner from './Banner'
+
+const App = () => (
+  <Banner>
+    <Banner.Heading>Hello</Banner.Heading>
+    <Banner.Subhead>Subhead</Banner.Subhead>
+  </Banner>
+)
 ```
 
-To ensure correct placement or for when there are multiples of the same child component type,
-use the `name` prop to specify which child element is inserted in a particular location in the tree.
+### componentsObject
 
-```jsx
-<Banner>
-  <Heading>Hello</Heading>
-  <Heading name='Subhead'>Subhead</Heading>
-</Banner>
-```
+The components object is used to defined which components the macro component will accept as children.
 
-### Using component type
-
-For stricter usage, use the component type as a key when defining the macro-component.
-
-```jsx
-import Heading from './Heading'
-import Subhead from './Subhead'
-
-const Banner = macro(elements => (
-  <Box p={3} color='white' bg='blue'>
-    {elements[Heading]}
-    {elements[Subhead]}
-  </Box>
-))
-```
-
-This ensures that **only** the components that are intended to be used with the macro component can be passed as children.
-
-**elementFunction**
+### elementFunction
 
 The element function is similar to a React component, but receives an elements object as its first argument and props as its second one.
 The elements object is created from its children and is intended to make encapsulating composition and element structures easier.
@@ -173,7 +181,15 @@ const elFunc = ({ Heading, Text, }, props) => (
   </header>
 )
 
-const SectionHeader = macro(elFunc)
+const Heading = styled.h2``
+const Text = styled.div``
+
+const componentsObj = {
+  Heading,
+  Text
+}
+
+const SectionHeader = Macro(componentsObj)(elFunc)
 ```
 
 ### Omitting children
@@ -183,6 +199,8 @@ the element function will render `undefined` and React will not render that elem
 This is useful for conditionally omitting optional children
 
 ```jsx
+const macro = Macro({ Icon, Text, CloseButton })
+
 const Message = macro({
   Icon,
   Text,
@@ -195,14 +213,22 @@ const Message = macro({
     {CloseButton}
   </Flex>
 )
+```
+
+```jsx
+import Message from './Message'
+
+const { Text, CloseButton } = Message
 
 // Omitting the Icon child element will render Message without an icon.
-<Message>
-  <Text>{props.message}</Text>
-  <CloseButton
-    onClick={props.dismissMessage}
-  />
-</Message>
+const message = (
+  <Message>
+    <Text>{props.message}</Text>
+    <CloseButton
+      onClick={props.dismissMessage}
+    />
+  </Message>
+)
 ```
 
 ### Props passed to the root component
@@ -210,6 +236,8 @@ const Message = macro({
 The second argument passed to the element function allows you to pass props to the root element or any other element within the component.
 
 ```jsx
+const macro = Macro({ Image, Text })
+
 const Card = macro(({
   Image,
   Text
@@ -219,11 +247,13 @@ const Card = macro(({
     {Text}
   </Box>
 ))
+```
 
+```jsx
 // example usage
 <Card bg='tomato'>
-  <Image src='kittens.png' />
-  <Text>Meow</Text>
+  <Card.Image src='kittens.png' />
+  <Card.Text>Meow</Card.Text>
 </Card>
 ```
 
@@ -232,7 +262,10 @@ const Card = macro(({
 To apply default props to the elements passed in as children, use the Clone component in an element function.
 
 ```jsx
-import macro, { Clone } from 'macro-components'
+import Macro, { Clone } from 'macro-components'
+import { Heading, Text } from './ui'
+
+const macro = Macro({ Heading, Text })
 
 const Header = macro(({ Heading, Text }) => (
   <Box p={2}>
@@ -249,29 +282,117 @@ const Header = macro(({ Heading, Text }) => (
 ))
 ```
 
-### Adding propTypes checks
+### Using a Component Multiple Times
 
-To help ensure that the correct child components are passed to the macro-component,
-pass a second options argument with an array of components as `childTypes` to the `macro` function.
+To use the same component twice, give it a unique key in the componentsObject.
 
 ```jsx
-import Heading from './Heading'
-import Subhead from './Subhead'
+import React from 'react'
+import Macro from 'macro-components'
+import { Heading } from './ui'
 
-const Banner = macro(({ Heading, Subhead }) => (
-  <Box p={3} color='white' bg='blue'>
+const macro = Macro({
+  Heading: Heading,
+  Subhead: Heading
+})
+
+const Header = macro(({ Heading, Subhead }) => (
+  <Box p={2}>
     {Heading}
     {Subhead}
   </Box>
-), {
-  childTypes: [
-    // define which components are valid children
-    // note that these are from the module scope,
-    // not the element function
-    Heading,
-    Subhead
-  ]
-})
+))
+```
+
+```jsx
+<Header>
+  <Header.Heading>Hello</Header.Heading>
+  <Header.Subhead>Subhead</Header.Subhead>
+</Header>
+```
+
+---
+
+### Alternatives
+
+To create layout components that are **not** coupled to specific child components, using props or ordered children is probably a simpler approach.
+
+The solutions below allow you to pass any arbitrary components as props or children.
+
+See [this discussion](https://github.com/jxnblk/macro-components/issues/3) for more.
+
+```jsx
+// using custom props
+const MyLayout = ({
+  left,
+  right
+}) => (
+  <Flex>
+    <Box width={128}>
+      {left}
+    </Box>
+    <Box width={1}>
+      {right}
+    </Box>
+  </Flex>
+)
+
+<MyLayout
+  left={(
+    <Image src='kitten.png' />
+  )}
+  right={(
+    <Text>Meow</Text>
+  )}
+/>
+```
+
+```jsx
+// using ordered children
+const Header = props => {
+  const [ first, second ] = React.Children.toArray(props.children)
+  return (
+    <Box p={3}>
+      {first}
+      {second}
+    </Box>
+  )
+}
+
+<Header>
+  <Heading>First</Heading>
+  <Text>Second</Text>
+</Header>
+```
+
+```jsx
+// using a children object
+const Header = ({
+  children: {
+    left,
+    right
+  }
+}) => (
+  <Flex>
+    <Box>
+      {left}
+    </Box>
+    <Box width={1}>
+      {right}
+    </Box>
+  </Flex>
+)
+
+<Header>
+  {{
+    left: (
+      <Image src='kitten.png' />
+    ),
+    right: (
+      <Text>Meow</Text>
+    )
+  }}
+</Header>
 ```
 
 ---
